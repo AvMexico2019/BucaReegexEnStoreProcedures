@@ -32,8 +32,23 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="FuncionesInSQLfromCS">
+      <HintPath>..\..\FuncionesInSQLfromCS\FuncionesInSQLfromCS\bin\Debug\FuncionesInSQLfromCS.dll</HintPath>
+    </Reference>
+    <Reference Include="INDAABIN_Utilerias, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\INDAABIN_Utilerias\INDAABIN_Utilerias\bin\Debug\INDAABIN_Utilerias.dll</HintPath>
+    </Reference>
+    <Reference Include="SQL_Formatter">
+      <HintPath>D:\SQL_Formatter\SQL_Formatter\SQL_Formatter\bin\Debug\SQL_Formatter.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,6 +62,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SQLServer\SQLServer.csproj">
+      <Project>{f64b0549-c696-4942-ac45-490f57105f25}</Project>
+      <Name>SQLServer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

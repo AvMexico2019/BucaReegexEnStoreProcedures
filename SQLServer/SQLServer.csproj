@@ -1,0 +1,361 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F64B0549-C696-4942-AC45-490F57105F25}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SQLServer</RootNamespace>
+    <AssemblyName>SQLServer</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AplicacionConcepto.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AreaPrioridad.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BitacoraExcepcion.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BitacoraSistema.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Cat_CampoReporte.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Cat_Documento.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Cat_Indicador.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Cat_InstitucionContratosDBCATNueva.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Cat_InstitucionContratosHistorico.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Cat_Parametro.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Cat_Prioridad.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Cat_Tabla.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Cat_Tema.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Cat_TipoArrendamiento.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Cat_TipoContratacion.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Cat_TipoContrato.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Cat_TipoExcepcionNormativaContrato.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Cat_TipoOcupacion.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Cat_TipoPersonaReferencia.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Concepto.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ConceptoAccesibilidad.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ContratoArrto.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ContratoArrto_Historico.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ContratosArrtoRIUF.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ContratosVigentes.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Convenio_Modificatorio.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="C__MigrationHistory.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DatosAdicionalesDireccion.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DatosAdicionalesInmueble.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="dbcatnueva_instituciones.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EmisionOpinonContrato.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ExcepcionNormativaContratoArrto.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Inmueble.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InmuebleArrendamiento.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InmuebleFebreroSinRIUF.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InmuebleNvosSinRIUF.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InmuebleSinRIUF.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="JustipreciacionArrto.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="JustipreciacionExt.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelINFORMATION_SCHEMA.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModelINFORMATION_SCHEMA.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelINFORMATION_SCHEMA.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelINFORMATION_SCHEMA.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModelINFORMATION_SCHEMA.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Movimiento.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NoUtiliAuditoria2019P_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NoUtiliAuditoria2019T.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NoUtiliAuditoria2019TProduccion.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PersonaReferencia.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PlazasInmueble.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PlazasInmuebleMod.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PlazasInmueble_20171205.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rel_ConceptoRespValor.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ReporteTotal.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ReporteTotal3.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RepRFI_RIUF.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Respuesta.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RespuestaConcepto.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RIUF.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelloDigital.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SPLIT_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuConsultadeTodoslosContratos_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuInsertInmueble_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuObtenerAcuseCuerpoSAEF_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuObtenerAcuseHeaderSelloSAEF_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuObtenerEmisionOpinion_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuObtenerFundamentoLegalXCptoNumOrden_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuObtenerInmueblesConvenioModificatorio_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuObtenerSMOIfolio_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuPaginandoSelectTabla_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuSelectAcuseContrato_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuSelectAcuseEmisionOpinionXIdFolio_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuSelectAcuseSMOI_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuSelectConceptosXResponderSMOI_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuSelectConceptosXResponderTema_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuSelectContratoArrto_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuSelectContratosHistoricoXInstitucionEdoMpo_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuSelectDatosAPartirDelFolioContrato_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuSelectEstadoMpoXIdInmuebleArrto_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuSelectExcepcionNormativaContratoArrto_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuSelectInmuebleArrtoXId_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuSelectInmuebles_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuSelectMvtosEmisionOpinionParaInmueblesArrto_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuSelectSolicitudesEmisionOpinionEmitidas_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuSelectSolicitudesSMOIEmitidas_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spuSelectTotalSMOIxFolioOpinion_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TraductorRUSP_INST.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TraductorRUSP_Sector.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TRADUCTOR_cat.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_ActualizarRIUF_Result.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VW_DWH_CONTRATORIUF.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VW_DWH_RIUF.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Vw_QlikContratoArren.cs">
+      <DependentUpon>ModelINFORMATION_SCHEMA.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="ModelINFORMATION_SCHEMA.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ModelINFORMATION_SCHEMA.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <None Include="ModelINFORMATION_SCHEMA.edmx.diagram">
+      <DependentUpon>ModelINFORMATION_SCHEMA.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ModelINFORMATION_SCHEMA.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ModelINFORMATION_SCHEMA.Context.cs</LastGenOutput>
+      <DependentUpon>ModelINFORMATION_SCHEMA.edmx</DependentUpon>
+    </Content>
+    <Content Include="ModelINFORMATION_SCHEMA.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ModelINFORMATION_SCHEMA.edmx</DependentUpon>
+      <LastGenOutput>ModelINFORMATION_SCHEMA.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
