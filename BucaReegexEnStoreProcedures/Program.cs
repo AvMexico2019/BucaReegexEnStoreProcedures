@@ -21,11 +21,10 @@ namespace BucaReegexEnStoreProcedures
                     }
                     else
                     {
-                        if (UserDefinedFunctions.fncRegexFind("Folio", reg.ROUTINE_DEFINITION.Equals(null) ? " " : reg.ROUTINE_DEFINITION))
+                        if (UserDefinedFunctions.fncRegexFind("Cat_Parametro", reg.ROUTINE_DEFINITION.Equals(null) ? " " : reg.ROUTINE_DEFINITION))
                         {
                             file.WriteLine("NAME >> " + reg.ROUTINE_NAME + " <<");
-                            file.WriteLine(reg.ROUTINE_DEFINITION);
-                            file.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                            file.WriteLine("---------------------------------");
                             file.WriteLine(reg.ROUTINE_DEFINITION);
                             file.WriteLine("////////////////////////////==================================");
                         }

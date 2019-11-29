@@ -1,0 +1,1963 @@
+NAME >> fncObtenerTotalM2SMOI <<
+/* =============================================
+-- Author:		desa25
+-- Create date: 258/0/2016
+-- Description:	ObtenerTotalM2SMOI
+
+select dbo.fncObtenerTotalM2SMOI(22, 135) as TotalM2Total
+
+select dbo.[fncObtenerTotalM2SMOI](17, 1) as TotalM2Total
+-- =============================================*/
+CREATE FUNCTION [dbo].[fncObtenerTotalM2SMOI]
+(
+@FolioAplicacionCpto int,
+@IdInstitucion int
+)
+RETURNS decimal(20,2)
+AS
+BEGIN
+	-- Declare the return variable here
+	DECLARE
+	@ResulTotalM2FactorSMOI_FactorX decimal(20,2),
+	@ValorCatParametro_FactorY varchar(10), --para uso exclusivo del Factor-Y
+	@ResulTotalM2FactorSMOI_FactorZ decimal(20,2),
+	@ResulTotalM2FactorSMOI decimal(20,2)
+
+
+	SELECT      
+	--  Rel_ConceptoRespValor.ValorRespuesta AS Factor1_Base, RespuestaConcepto.ValorResp AS Factor2_Resp, 
+	@ResulTotalM2FactorSMOI_FactorX= 
+	sum(Rel_ConceptoRespValor.ValorRespuesta * isnull(RespuestaConcepto.ValorResp,0))  --AS TotalM2Factor
+	FROM    AplicacionConcepto INNER JOIN
+			Cat_TipoArrendamiento ON AplicacionConcepto.Fk_IdTipoArrendamiento = Cat_TipoArrendamiento.IdTipoArrendamiento INNER JOIN
+			RespuestaConcepto ON AplicacionConcepto.IdAplicacionConcepto = RespuestaConcepto.Fk_IdAplicacionConcepto INNER JOIN
+			Rel_ConceptoRespValor ON RespuestaConcepto.Fk_IdConceptoRespValor = Rel_ConceptoRespValor.IdConceptoRespValor INNER JOIN
+			Cat_Tema ON Rel_ConceptoRespValor.Fk_IdTema = Cat_Tema.IdTema
+	WHERE        
+	(AplicacionConcepto.Fk_IdInstitucion = @IdInstitucion) AND 
+	AplicacionConcepto.FolioAplicacionConcepto = @FolioAplicacionCpto AND
+	(Cat_TipoArrendamiento.DescripcionTipoArrendamiento = 'Ninguno') and
+	Cat_Tema.DescripcionTema = 'SMOI FactorX'
+	
+	--recuperar valor de FactorZ de CatParametro, que corresponda con el perido de emision del Cpto de SMOI 
+	Select @ValorCatParametro_FactorY = ValorParametro
+	from Cat_Parametro Where IdParametro = 4
+	--comparar cadenas sin espacios, para asegurar
+	----where   ParametroNombre like '%Factor-Y%'
+	----and FechaRegistro <=  (
+	----	select AplicacionConcepto.FechaRegistro
+	----	from AplicacionConcepto
+	----	WHERE        
+	----	(AplicacionConcepto.Fk_IdInstitucion = @IdInstitucion) AND 
+	----	AplicacionConcepto.FolioAplicacionConcepto = @FolioAplicacionCpto
+	----)
+
+	IF (@ValorCatParametro_FactorY IS NULL)
+	BEGIN
+	Select @ValorCatParametro_FactorY = AplicacionConcepto.SMOIm2FactorY
+		from AplicacionConcepto
+		WHERE        
+		(AplicacionConcepto.Fk_IdInstitucion = @IdInstitucion) AND AplicacionConcepto.FolioAplicacionConcepto = @FolioAplicacionCpto AND AplicacionConcepto.Fk_IdTema = 7
+	END
+
+	if (@ValorCatParametro_FactorY is not null) and  (ISNumeric(@ValorCatParametro_FactorY)= 1)
+	begin
+			--FactorX + FactorY
+			set @ResulTotalM2FactorSMOI = @ResulTotalM2FactorSMOI_FactorX + (@ResulTotalM2FactorSMOI_FactorX * convert(numeric(7,2), @ValorCatParametro_FactorY))
+	
+			SELECT      
+			--  Rel_ConceptoRespValor.ValorRespuesta AS Factor1_Base, RespuestaConcepto.ValorResp AS Factor2_Resp, 
+			@ResulTotalM2FactorSMOI_FactorZ= 
+			ISNULL(sum(Rel_ConceptoRespValor.ValorRespuesta * isnull(RespuestaConcepto.ValorResp,0)),0.0)  --AS TotalM2Factor
+			FROM    AplicacionConcepto INNER JOIN
+					Cat_TipoArrendamiento ON AplicacionConcepto.Fk_IdTipoArrendamiento = Cat_TipoArrendamiento.IdTipoArrendamiento INNER JOIN
+					RespuestaConcepto ON AplicacionConcepto.IdAplicacionConcepto = RespuestaConcepto.Fk_IdAplicacionConcepto INNER JOIN
+					Rel_ConceptoRespValor ON RespuestaConcepto.Fk_IdConceptoRespValor = Rel_ConceptoRespValor.IdConceptoRespValor INNER JOIN
+					Cat_Tema ON Rel_ConceptoRespValor.Fk_IdTema = Cat_Tema.IdTema
+			WHERE        
+			(AplicacionConcepto.Fk_IdInstitucion = @IdInstitucion) AND 
+			AplicacionConcepto.FolioAplicacionConcepto = @FolioAplicacionCpto AND
+			(Cat_TipoArrendamiento.DescripcionTipoArrendamiento = 'Ninguno') and
+			Cat_Tema.DescripcionTema = 'SMOI FactorZ'
+
+			--A (FactorX + FactorY) sumarle la sum
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+/* =============================================
+-- Author:		desa25
+-- Create date: 258/0/2016
+-- Description:	ObtenerTotalM2SMOI
+
+select dbo.fncObtenerTotalM2SMOI(22, 135) as TotalM2Total
+
+select dbo.[fncObtenerTotalM2SMOI](17, 1) as TotalM2Total
+-- =============================================*/
+CREATE FUNCTION [dbo].[fncObtenerTotalM2SMOI]
+(
+@FolioAplicacionCpto int,
+@IdInstitucion int
+)
+RETURNS decimal(20,2)
+AS
+BEGIN
+	-- Declare the return variable here
+	DECLARE
+	@ResulTotalM2FactorSMOI_FactorX decimal(20,2),
+	@ValorCatParametro_FactorY varchar(10), --para uso exclusivo del Factor-Y
+	@ResulTotalM2FactorSMOI_FactorZ decimal(20,2),
+	@ResulTotalM2FactorSMOI decimal(20,2)
+
+
+	SELECT      
+	--  Rel_ConceptoRespValor.ValorRespuesta AS Factor1_Base, RespuestaConcepto.ValorResp AS Factor2_Resp, 
+	@ResulTotalM2FactorSMOI_FactorX= 
+	sum(Rel_ConceptoRespValor.ValorRespuesta * isnull(RespuestaConcepto.ValorResp,0))  --AS TotalM2Factor
+	FROM    AplicacionConcepto INNER JOIN
+			Cat_TipoArrendamiento ON AplicacionConcepto.Fk_IdTipoArrendamiento = Cat_TipoArrendamiento.IdTipoArrendamiento INNER JOIN
+			RespuestaConcepto ON AplicacionConcepto.IdAplicacionConcepto = RespuestaConcepto.Fk_IdAplicacionConcepto INNER JOIN
+			Rel_ConceptoRespValor ON RespuestaConcepto.Fk_IdConceptoRespValor = Rel_ConceptoRespValor.IdConceptoRespValor INNER JOIN
+			Cat_Tema ON Rel_ConceptoRespValor.Fk_IdTema = Cat_Tema.IdTema
+	WHERE        
+	(AplicacionConcepto.Fk_IdInstitucion = @IdInstitucion) AND 
+	AplicacionConcepto.FolioAplicacionConcepto = @FolioAplicacionCpto AND
+	(Cat_TipoArrendamiento.DescripcionTipoArrendamiento = 'Ninguno') and
+	Cat_Tema.DescripcionTema = 'SMOI FactorX'
+	
+	--recuperar valor de FactorZ de CatParametro, que corresponda con el perido de emision del Cpto de SMOI 
+	Select @ValorCatParametro_FactorY = ValorParametro
+	from Cat_Parametro Where IdParametro = 4
+	--comparar cadenas sin espacios, para asegurar
+	----where   ParametroNombre like '%Factor-Y%'
+	----and FechaRegistro <=  (
+	----	select AplicacionConcepto.FechaRegistro
+	----	from AplicacionConcepto
+	----	WHERE        
+	----	(AplicacionConcepto.Fk_IdInstitucion = @IdInstitucion) AND 
+	----	AplicacionConcepto.FolioAplicacionConcepto = @FolioAplicacionCpto
+	----)
+
+	IF (@ValorCatParametro_FactorY IS NULL)
+	BEGIN
+	Select @ValorCatParametro_FactorY = AplicacionConcepto.SMOIm2FactorY
+		from AplicacionConcepto
+		WHERE        
+		(AplicacionConcepto.Fk_IdInstitucion = @IdInstitucion) AND AplicacionConcepto.FolioAplicacionConcepto = @FolioAplicacionCpto AND AplicacionConcepto.Fk_IdTema = 7
+	END
+
+	if (@ValorCatParametro_FactorY is not null) and  (ISNumeric(@ValorCatParametro_FactorY)= 1)
+	begin
+			--FactorX + FactorY
+			set @ResulTotalM2FactorSMOI = @ResulTotalM2FactorSMOI_FactorX + (@ResulTotalM2FactorSMOI_FactorX * convert(numeric(7,2), @ValorCatParametro_FactorY))
+	
+			SELECT      
+			--  Rel_ConceptoRespValor.ValorRespuesta AS Factor1_Base, RespuestaConcepto.ValorResp AS Factor2_Resp, 
+			@ResulTotalM2FactorSMOI_FactorZ= 
+			ISNULL(sum(Rel_ConceptoRespValor.ValorRespuesta * isnull(RespuestaConcepto.ValorResp,0)),0.0)  --AS TotalM2Factor
+			FROM    AplicacionConcepto INNER JOIN
+					Cat_TipoArrendamiento ON AplicacionConcepto.Fk_IdTipoArrendamiento = Cat_TipoArrendamiento.IdTipoArrendamiento INNER JOIN
+					RespuestaConcepto ON AplicacionConcepto.IdAplicacionConcepto = RespuestaConcepto.Fk_IdAplicacionConcepto INNER JOIN
+					Rel_ConceptoRespValor ON RespuestaConcepto.Fk_IdConceptoRespValor = Rel_ConceptoRespValor.IdConceptoRespValor INNER JOIN
+					Cat_Tema ON Rel_ConceptoRespValor.Fk_IdTema = Cat_Tema.IdTema
+			WHERE        
+			(AplicacionConcepto.Fk_IdInstitucion = @IdInstitucion) AND 
+			AplicacionConcepto.FolioAplicacionConcepto = @FolioAplicacionCpto AND
+			(Cat_TipoArrendamiento.DescripcionTipoArrendamiento = 'Ninguno') and
+			Cat_Tema.DescripcionTema = 'SMOI FactorZ'
+
+			--A (FactorX + FactorY) sumarle la sum
+////////////////////////////==================================
+NAME >> fncObtenerTotalM2XFactorSMOI <<
+/* =============================================
+-- Author:		desa25
+-- Create date: 07/09/2016
+-- Description:	Obtener el Total por concepto SMOI (FactorX, FactorY, Factor Z)
+
+select dbo.fncObtenerTotalM2XFactorSMOI(22, 135, 'SMOI FactorX') as TotalM2FactorX
+select dbo.fncObtenerTotalM2XFactorSMOI(22, 135, 'SMOI FactorY') as TotalM2FactorY
+select dbo.fncObtenerTotalM2XFactorSMOI(22, 135, 'SMOI FactorZ') as TotalM2FactorZ
+
+
+-- =============================================*/
+CREATE FUNCTION [dbo].[fncObtenerTotalM2XFactorSMOI]
+(
+@FolioAplicacionCpto int,
+@IdInstitucion int,
+@DescFactorSMOI varchar(100)
+)
+RETURNS decimal(20,2)
+AS
+BEGIN
+
+	
+	-- Declare the return variable here
+	DECLARE @ResulTotalM2FactorSMOI decimal(20,2), 
+	@ValorCatParametro_FactorY varchar(10) --para uso exclusivo del Factor-Y
+
+	if (@DescFactorSMOI = 'SMOI FactorY')
+	begin
+		/*				
+		--recuperar valor de FactorZ de CatParametro, que corresponda con el perido de emision del Cpto de SMOI 
+		Select @ValorCatParametro_FactorY = ValorParametro
+		from Cat_Parametro
+		--comparar cadenas sin espacios, para asegurar
+		where   ParametroNombre like '%Factor-Y%'
+		and FechaRegistro <=  (
+			select AplicacionConcepto.FechaRegistro
+			from AplicacionConcepto
+			WHERE        
+			(AplicacionConcepto.Fk_IdInstitucion = @IdInstitucion) AND 
+			AplicacionConcepto.FolioAplicacionConcepto = @FolioAplicacionCpto
+		)
+		*/
+
+		select @ValorCatParametro_FactorY = SMOIm2FactorY
+		from AplicacionConcepto
+		WHERE        
+		AplicacionConcepto.Fk_IdInstitucion = @IdInstitucion AND 
+		AplicacionConcepto.FolioAplicacionConcepto = @FolioAplicacionCpto
+				
+		if (ISNumeric(@ValorCatParametro_FactorY)= 1)
+			set @DescFactorSMOI = 'SMOI FactorX' --cambiarlo para obtener a continuacion abaajo la suma del factor-X, ya que Y depende de X
+		else
+			set @ValorCatParametro_FactorY = '0' --asignar cero para que no trune y se nulifique a cero el resultado para Factor-Y cuando sea solicitado
+
+	end
+
+
+
+	SELECT      
+	--  Rel_ConceptoRespValor.ValorRespuesta AS Factor1_Base, RespuestaConcepto.ValorResp AS Factor2_Resp, 
+	@ResulTotalM2FactorSMOI= 
+	sum(Rel_ConceptoRespValor.ValorRespuesta * isnull(RespuestaConcepto.ValorResp,0))  --AS TotalM2Factor
+	FROM    AplicacionConcepto INNER JOIN
+			Cat_TipoArrendamiento ON AplicacionConcepto.Fk_IdTipoArrendamiento = Cat_TipoArrendamiento.IdTipoArrendamiento INNER JOIN
+			RespuestaConcepto ON AplicacionConcepto.IdAplicacionConcepto = RespuestaConcepto.Fk_IdAplicacionConcepto INNER JOIN
+			Rel_ConceptoRespValor ON RespuestaConcepto.Fk_IdConceptoRespValor = Rel_ConceptoRespValor.IdConceptoRespValor INNER JOIN
+			Cat_Tema ON Rel_ConceptoRespValor.Fk_IdTema = Cat_Tema.IdTema
+	WHERE        
+	(AplicacionConcepto.Fk_IdInstitucion = @IdInstitucion) AND 
+	AplicacionConcepto.FolioAplicacionConcepto = @FolioAplicacionCpto AND
+	(Cat_TipoArrendamiento.DescripcionTipoArrendamiento = 'Ninguno')
+	and ( @DescFactorSMOI IS NULL OR @DescFactorSMOI = Cat_Tema.DescripcionTema)--parametro opcional
+	--and Cat_Tema.DescripcionTema = @DescFactorSMOI
+
+	--Si se solicito: 'SMOI FactorY'  
+	if (@ValorCatParametro_FactorY is not null)
+		set @ResulTotalM2FactorSMOI = (@ResulTotalM2FactorSMOI * convert(numeric(7,2), @ValorCatParametro_FactorY))
+	
+	
+	-- Return the result of the function
+	RETURN isnull(@ResulTotalM2FactorSMOI,0)
+
+END
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+/* =============================================
+-- Author:		desa25
+-- Create date: 07/09/2016
+-- Description:	Obtener el Total por concepto SMOI (FactorX, FactorY, Factor Z)
+
+select dbo.fncObtenerTotalM2XFactorSMOI(22, 135, 'SMOI FactorX') as TotalM2FactorX
+select dbo.fncObtenerTotalM2XFactorSMOI(22, 135, 'SMOI FactorY') as TotalM2FactorY
+select dbo.fncObtenerTotalM2XFactorSMOI(22, 135, 'SMOI FactorZ') as TotalM2FactorZ
+
+
+-- =============================================*/
+CREATE FUNCTION [dbo].[fncObtenerTotalM2XFactorSMOI]
+(
+@FolioAplicacionCpto int,
+@IdInstitucion int,
+@DescFactorSMOI varchar(100)
+)
+RETURNS decimal(20,2)
+AS
+BEGIN
+
+	
+	-- Declare the return variable here
+	DECLARE @ResulTotalM2FactorSMOI decimal(20,2), 
+	@ValorCatParametro_FactorY varchar(10) --para uso exclusivo del Factor-Y
+
+	if (@DescFactorSMOI = 'SMOI FactorY')
+	begin
+		/*				
+		--recuperar valor de FactorZ de CatParametro, que corresponda con el perido de emision del Cpto de SMOI 
+		Select @ValorCatParametro_FactorY = ValorParametro
+		from Cat_Parametro
+		--comparar cadenas sin espacios, para asegurar
+		where   ParametroNombre like '%Factor-Y%'
+		and FechaRegistro <=  (
+			select AplicacionConcepto.FechaRegistro
+			from AplicacionConcepto
+			WHERE        
+			(AplicacionConcepto.Fk_IdInstitucion = @IdInstitucion) AND 
+			AplicacionConcepto.FolioAplicacionConcepto = @FolioAplicacionCpto
+		)
+		*/
+
+		select @ValorCatParametro_FactorY = SMOIm2FactorY
+		from AplicacionConcepto
+		WHERE        
+		AplicacionConcepto.Fk_IdInstitucion = @IdInstitucion AND 
+		AplicacionConcepto.FolioAplicacionConcepto = @FolioAplicacionCpto
+				
+		if (ISNumeric(@ValorCatParametro_FactorY)= 1)
+			set @DescFactorSMOI = 'SMOI FactorX' --cambiarlo para obtener a continuacion abaajo la suma del factor-X, ya que Y depende de X
+		else
+			set @ValorCatParametro_FactorY = '0' --asignar cero para que no trune y se nulifique a cero el resultado para Factor-Y cuando sea solicitado
+
+	end
+
+
+
+	SELECT      
+	--  Rel_ConceptoRespValor.ValorRespuesta AS Factor1_Base, RespuestaConcepto.ValorResp AS Factor2_Resp, 
+	@ResulTotalM2FactorSMOI= 
+	sum(Rel_ConceptoRespValor.ValorRespuesta * isnull(RespuestaConcepto.ValorResp,0))  --AS TotalM2Factor
+	FROM    AplicacionConcepto INNER JOIN
+			Cat_TipoArrendamiento ON AplicacionConcepto.Fk_IdTipoArrendamiento = Cat_TipoArrendamiento.IdTipoArrendamiento INNER JOIN
+			RespuestaConcepto ON AplicacionConcepto.IdAplicacionConcepto = RespuestaConcepto.Fk_IdAplicacionConcepto INNER JOIN
+			Rel_ConceptoRespValor ON RespuestaConcepto.Fk_IdConceptoRespValor = Rel_ConceptoRespValor.IdConceptoRespValor INNER JOIN
+			Cat_Tema ON Rel_ConceptoRespValor.Fk_IdTema = Cat_Tema.IdTema
+	WHERE        
+	(AplicacionConcepto.Fk_IdInstitucion = @IdInstitucion) AND 
+	AplicacionConcepto.FolioAplicacionConcepto = @FolioAplicacionCpto AND
+	(Cat_TipoArrendamiento.DescripcionTipoArrendamiento = 'Ninguno')
+	and ( @DescFactorSMOI IS NULL OR @DescFactorSMOI = Cat_Tema.DescripcionTema)--parametro opcional
+	--and Cat_Tema.DescripcionTema = @DescFactorSMOI
+
+	--Si se solicito: 'SMOI FactorY'  
+	if (@ValorCatParametro_FactorY is not null)
+		set @ResulTotalM2FactorSMOI = (@ResulTotalM2FactorSMOI * convert(numeric(7,2), @ValorCatParametro_FactorY))
+	
+	
+	-- Return the result of the function
+	RETURN isnull(@ResulTotalM2FactorSMOI,0)
+
+END
+
+////////////////////////////==================================
+EDS ......< definición vacia
+fncRegexFind ......< definición vacia
+SelloDigitalContratos ......< definición vacia
+NAME >> SP_ActualizaCat_ParametroRUSP <<
+-- =============================================
+-- Author:		Rogelio Chavez Aguilar
+-- Create date: 27/11/2017
+-- Description:	actualiza el valosParametro donde guardaremos la fecha de corte del RUSP
+-- =============================================
+ CREATE PROCEDURE [dbo].[SP_ActualizaCat_ParametroRUSP]
+	@FechaCorte varchar(MAX)
+	
+AS
+BEGIN
+	
+	--update para cat_parametro
+	UPDATE Cat_Parametro SET ValorParametro = @FechaCorte WHERE IdParametro = 9
+   
+END
+
+
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+-- =============================================
+-- Author:		Rogelio Chavez Aguilar
+-- Create date: 27/11/2017
+-- Description:	actualiza el valosParametro donde guardaremos la fecha de corte del RUSP
+-- =============================================
+ CREATE PROCEDURE [dbo].[SP_ActualizaCat_ParametroRUSP]
+	@FechaCorte varchar(MAX)
+	
+AS
+BEGIN
+	
+	--update para cat_parametro
+	UPDATE Cat_Parametro SET ValorParametro = @FechaCorte WHERE IdParametro = 9
+   
+END
+
+
+
+
+////////////////////////////==================================
+NAME >> spuInsertarMovimientoSAEF <<
+-- =============================================
+-- Author:		Rogelio Chavez Aguilar
+-- Create date: 06/08/2018
+-- Description:	inserta en la tabla de movimiento los resultados de la emision de SAEF
+-- =============================================
+-- Author:		Rogelio Chavez Aguilar
+-- Create date: 06/08/2018
+-- Description:	inserta en la tabla de movimiento los resultados de la emision de SAEF
+-- =============================================
+CREATE PROCEDURE [dbo].[spuInsertarMovimientoSAEF] 
+	
+	@IdAplicacionConcepto int,
+	@IdConceptoAccesibilidad int,
+	@Aplica bit,
+	@Existe bit,
+	@Cantidad int,
+	@SeRequiere  bit,
+	@Cumple bit,
+	@Observaciones varchar(max),
+	@IdUsuario int,
+	@TipoGuardado int,
+	@Cadena varchar(max),
+	@SelloDigital varchar(max),
+	@QR varchar(max)
+
+
+AS
+BEGIN
+
+declare @FolioSAEF int
+declare @IdMovimiento int
+	
+	if(@TipoGuardado = 1)
+	begin
+
+	select @IdMovimiento = IdMovimiento from Movimiento where FK_IdAplicacionConcepto = @IdAplicacionConcepto and Fk_IdConcAccesibilidad = @IdConceptoAccesibilidad and EstatusRegistro = 1	
+	
+	if(@IdMovimiento is null)
+	begin 
+		insert into Movimiento values (@IdAplicacionConcepto,@IdConceptoAccesibilidad,@Aplica,@Existe,@Cantidad,@SeRequiere,@Cumple,@Observaciones,1,@IdUsuario,getdate())
+	end
+	else 
+	begin
+		update Movimiento set Aplica = @Aplica, Existe = @Existe, Cantidad = @Cantidad, SeRequiere = @SeRequiere, Cumple = @Cumple, Observaciones = @Observaciones where IdMovimiento = @IdMovimiento
+	end
+
+	end
+
+	if(@TipoGuardado = 2)
+	begin
+
+	--gurdamos el sello y la cadena en la tabla de sello
+	insert into SelloDigital
+	values
+	(3,@IdAplicacionConcepto,@Cadena,@SelloDigital,NEWID(),1,GETDATE(),@IdUsuario,@QR)
+
+
+	--OBTENEMOS EL ULTIMO FOLIO E INCREMENTAMOS EN UNO
+	select @FolioSAEF = CONVERT(int,ValorParametro) + 1 
+	from Cat_Parametro
+	where ParametroNombre = 'FolioAccesibilidad' and EstatusRegistro = 1
+	
+
+	-- despues actualizamos el folio de emision en la tabla de aplicacion concepto
+	UPDATE AplicacionConcepto
+	set
+	FolioSAEF = convert(int,@FolioSAEF)
+	where IdAplicacionConcepto = @IdAplicacionConcepto
+
+	--actualizamos cat parametro en el contador de folio saef con el ultimo que se creo
+	update Cat_Parametro
+	set
+	ValorParametro = @FolioSAEF
+	where ParametroNombre = 'FolioAccesibilidad' and EstatusRegistro = 1
+
+	end
+	
+END
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+-- =============================================
+-- Author:		Rogelio Chavez Aguilar
+-- Create date: 06/08/2018
+-- Description:	inserta en la tabla de movimiento los resultados de la emision de SAEF
+-- =============================================
+-- Author:		Rogelio Chavez Aguilar
+-- Create date: 06/08/2018
+-- Description:	inserta en la tabla de movimiento los resultados de la emision de SAEF
+-- =============================================
+CREATE PROCEDURE [dbo].[spuInsertarMovimientoSAEF] 
+	
+	@IdAplicacionConcepto int,
+	@IdConceptoAccesibilidad int,
+	@Aplica bit,
+	@Existe bit,
+	@Cantidad int,
+	@SeRequiere  bit,
+	@Cumple bit,
+	@Observaciones varchar(max),
+	@IdUsuario int,
+	@TipoGuardado int,
+	@Cadena varchar(max),
+	@SelloDigital varchar(max),
+	@QR varchar(max)
+
+
+AS
+BEGIN
+
+declare @FolioSAEF int
+declare @IdMovimiento int
+	
+	if(@TipoGuardado = 1)
+	begin
+
+	select @IdMovimiento = IdMovimiento from Movimiento where FK_IdAplicacionConcepto = @IdAplicacionConcepto and Fk_IdConcAccesibilidad = @IdConceptoAccesibilidad and EstatusRegistro = 1	
+	
+	if(@IdMovimiento is null)
+	begin 
+		insert into Movimiento values (@IdAplicacionConcepto,@IdConceptoAccesibilidad,@Aplica,@Existe,@Cantidad,@SeRequiere,@Cumple,@Observaciones,1,@IdUsuario,getdate())
+	end
+	else 
+	begin
+		update Movimiento set Aplica = @Aplica, Existe = @Existe, Cantidad = @Cantidad, SeRequiere = @SeRequiere, Cumple = @Cumple, Observaciones = @Observaciones where IdMovimiento = @IdMovimiento
+	end
+
+	end
+
+	if(@TipoGuardado = 2)
+	begin
+
+	--gurdamos el sello y la cadena en la tabla de sello
+	insert into SelloDigital
+	values
+	(3,@IdAplicacionConcepto,@Cadena,@SelloDigital,NEWID(),1,GETDATE(),@IdUsuario,@QR)
+
+
+	--OBTENEMOS EL ULTIMO FOLIO E INCREMENTAMOS EN UNO
+	select @FolioSAEF = CONVERT(int,ValorParametro) + 1 
+	from Cat_Parametro
+	where ParametroNombre = 'FolioAccesibilidad' and EstatusRegistro = 1
+	
+
+	-- despues actualizamos el folio de emision en la tabla de aplicacion concepto
+	UPDATE AplicacionConcepto
+	set
+	FolioSAEF = convert(int,@FolioSAEF)
+	where IdAplicacionConcepto = @IdAplicacionConcepto
+
+	--actualizamos cat parametro en el contador de folio saef con el ultimo que se creo
+	update Cat_Parametro
+	set
+	ValorParametro = @FolioSAEF
+	where ParametroNombre = 'FolioAccesibilidad' and EstatusRegistro = 1
+
+	end
+	
+END
+////////////////////////////==================================
+NAME >> spuInsertContratoArrto <<
+/*-- =============================================
+-- Author:		desa11
+-- Create date: 03/10/2017
+-- Description:	Insert Contrato Arrto.
+
+exec [dbo].[spuInsertContratoArrto]
+
+-- =============================================*/
+
+
+CREATE PROCEDURE [dbo].[spuInsertContratoArrto] 
+   
+    @Fk_IdTipoContrato tinyint, --Nac, Ext u OtrasFig (catalogo local)
+    @Fk_IdTipoArrendamiento tinyint, --Nuevo, Sust o Cont (catalogo local)
+    @Fk_IdTipoContratacion tinyint = NULL, --Automatico, Dictamiando (catalogo local)
+    @Fk_IdInmuebleArrendamiento int, --la direccion
+    @Fk_NumContratoHistorico int = NULL, --cuando se trata de una continuacion o sustitucion de contrato, de Contrato_Historico
+    @FolioContratoArrtoPadre int = null, --@Fk_IdContratoArrtoPadre --cuando se trata de un contiunuacion o sustitucion de contrato, de esta tabla
+    @Fk_IdTipoUsoInm int = null, --Administracion, comercial (del bus)
+    @OtroUsoInmueble varchar(200) = NULL, --dependiente del anterior cuando no existe
+    @Fk_IdTipoOcupacion int = NULL, --Comodato, Prestamo, Conscesión (aplicable solo a Arrendamiento de Otras Fig.)
+    @OtroTipoOcupacion varchar(100) = NULL, --dependiente del anterior, cuando no existe
+    @Fk_IdTipoMoneda int, --(del bus)
+    @Fk_IdInstitucion int, --(del bus)
+    @NombreInstitucion varchar(350) = NULL, --del SSO del promovente
+    @FechaInicioOcupacion datetime,
+    @FechaFinOcupacion datetime,
+    @AreaOcupadaM2 numeric(30, 4),
+    @MontoPagoMensual money,
+    @MontoPagoPorCajonesEstacionamiento money,
+    @CuotaMantenimiento money,
+    @PtjeImpuesto decimal(4, 2),
+    @FolioEmisionOpinion int= NULL, --Emision de Opinion
+    @NumeroDictamenExcepcionFolioSMOI varchar(30) = NULL, --atributo dependiente, si la emision de Opinion, no inlcuye SMOI, entonces "quizas" (se deja registrar aun no lo tenga) hay DictamenExcepcion
+    @RIUF char(10) = NULL,
+    @Observaciones varchar(400) = NULL,
+	@PropietarioInmueble varchar(200), -- pueden obtenerse de la justipreciacion, cuando existe, si no el promovente lo captura
+	@FuncionarioResponsable varchar(150),  --pueden obtenerse de la justipreciacion, cuando existe, si no el promovente lo captura
+    @Fk_IdUsuarioRegistro int,
+	@CargoUsuarioRegistro varchar(170),
+	
+	--personas de referencia: del OIC
+	@PersonaRefOIC_Cargo varchar(200),
+    @PersonaRefOIC_Nombre varchar(100),
+    @PersonaRefOIC_ApellidoPaterno varchar(100) = NULL,
+    @PersonaRefOIC_ApellidoMaterno varchar(100) = NULL,
+    @PersonaRefOIC_Email varchar(100),
+	--persona de referencia: Capturista
+    @PersonaRefCapturista_Cargo varchar(200),
+    @PersonaRefCapturista_Nombre varchar(100),
+    @PersonaRefCapturista_ApellidoPaterno varchar(100) = NULL,
+    @PersonaRefCapturista_ApellidoMaterno varchar(100) = NULL,
+    @PersonaRefCapturista_Email varchar(100),
+	--De justipreciacion
+	@Secuencial_Justipreciacion varchar(20) = null,
+    @SuperficieDictaminada_Justipreciacion varchar(300)= null,
+    @FechaDictamen_Justipreciacion datetime = null,
+    @MontoDictaminado_Justipreciacion decimal(15, 2) = null,
+	@EstatusAtencion varchar(20) = null,
+	@NoGenerico varchar(20) = null,
+	@UnidadMedidaSupRentableDictaminada  varchar(20) = null,
+
+	--apartado de seguridad
+	@CuentaConDictamen bit = 0,
+	@FechaDictamen datetime = NULL,
+
+	@CadenaOriginal varchar(MAX),
+	@SelloDigital  varchar(MAX),
+	@QR varchar(max),
+	@FolioContrato int out
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	
+	declare  @FolioContratoArrto int, @Fk_IdAplicacionConcepto_Opinion int, @Msj varchar(500),
+	 @DescripcionTipoContrato varchar(50), @IdContratoArrto int, 
+	 @DescripcionTipoArrendamiento varchar(50), @Fk_IdContratoArrtoPadre int,
+	 --RCA 08/06/2018
+	 @EsRUSP bit
+
+	--Obtener el Folio de contrato de cat_parametros
+	--leer de catParamentros el ultimo Id, del tipo de cpto y sumar 1
+	SELECT @FolioContratoArrto = convert(int, ValorParametro)+1
+	FROM [
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+/*-- =============================================
+-- Author:		desa11
+-- Create date: 03/10/2017
+-- Description:	Insert Contrato Arrto.
+
+exec [dbo].[spuInsertContratoArrto]
+
+-- =============================================*/
+
+
+CREATE PROCEDURE [dbo].[spuInsertContratoArrto] 
+   
+    @Fk_IdTipoContrato tinyint, --Nac, Ext u OtrasFig (catalogo local)
+    @Fk_IdTipoArrendamiento tinyint, --Nuevo, Sust o Cont (catalogo local)
+    @Fk_IdTipoContratacion tinyint = NULL, --Automatico, Dictamiando (catalogo local)
+    @Fk_IdInmuebleArrendamiento int, --la direccion
+    @Fk_NumContratoHistorico int = NULL, --cuando se trata de una continuacion o sustitucion de contrato, de Contrato_Historico
+    @FolioContratoArrtoPadre int = null, --@Fk_IdContratoArrtoPadre --cuando se trata de un contiunuacion o sustitucion de contrato, de esta tabla
+    @Fk_IdTipoUsoInm int = null, --Administracion, comercial (del bus)
+    @OtroUsoInmueble varchar(200) = NULL, --dependiente del anterior cuando no existe
+    @Fk_IdTipoOcupacion int = NULL, --Comodato, Prestamo, Conscesión (aplicable solo a Arrendamiento de Otras Fig.)
+    @OtroTipoOcupacion varchar(100) = NULL, --dependiente del anterior, cuando no existe
+    @Fk_IdTipoMoneda int, --(del bus)
+    @Fk_IdInstitucion int, --(del bus)
+    @NombreInstitucion varchar(350) = NULL, --del SSO del promovente
+    @FechaInicioOcupacion datetime,
+    @FechaFinOcupacion datetime,
+    @AreaOcupadaM2 numeric(30, 4),
+    @MontoPagoMensual money,
+    @MontoPagoPorCajonesEstacionamiento money,
+    @CuotaMantenimiento money,
+    @PtjeImpuesto decimal(4, 2),
+    @FolioEmisionOpinion int= NULL, --Emision de Opinion
+    @NumeroDictamenExcepcionFolioSMOI varchar(30) = NULL, --atributo dependiente, si la emision de Opinion, no inlcuye SMOI, entonces "quizas" (se deja registrar aun no lo tenga) hay DictamenExcepcion
+    @RIUF char(10) = NULL,
+    @Observaciones varchar(400) = NULL,
+	@PropietarioInmueble varchar(200), -- pueden obtenerse de la justipreciacion, cuando existe, si no el promovente lo captura
+	@FuncionarioResponsable varchar(150),  --pueden obtenerse de la justipreciacion, cuando existe, si no el promovente lo captura
+    @Fk_IdUsuarioRegistro int,
+	@CargoUsuarioRegistro varchar(170),
+	
+	--personas de referencia: del OIC
+	@PersonaRefOIC_Cargo varchar(200),
+    @PersonaRefOIC_Nombre varchar(100),
+    @PersonaRefOIC_ApellidoPaterno varchar(100) = NULL,
+    @PersonaRefOIC_ApellidoMaterno varchar(100) = NULL,
+    @PersonaRefOIC_Email varchar(100),
+	--persona de referencia: Capturista
+    @PersonaRefCapturista_Cargo varchar(200),
+    @PersonaRefCapturista_Nombre varchar(100),
+    @PersonaRefCapturista_ApellidoPaterno varchar(100) = NULL,
+    @PersonaRefCapturista_ApellidoMaterno varchar(100) = NULL,
+    @PersonaRefCapturista_Email varchar(100),
+	--De justipreciacion
+	@Secuencial_Justipreciacion varchar(20) = null,
+    @SuperficieDictaminada_Justipreciacion varchar(300)= null,
+    @FechaDictamen_Justipreciacion datetime = null,
+    @MontoDictaminado_Justipreciacion decimal(15, 2) = null,
+	@EstatusAtencion varchar(20) = null,
+	@NoGenerico varchar(20) = null,
+	@UnidadMedidaSupRentableDictaminada  varchar(20) = null,
+
+	--apartado de seguridad
+	@CuentaConDictamen bit = 0,
+	@FechaDictamen datetime = NULL,
+
+	@CadenaOriginal varchar(MAX),
+	@SelloDigital  varchar(MAX),
+	@QR varchar(max),
+	@FolioContrato int out
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	
+	declare  @FolioContratoArrto int, @Fk_IdAplicacionConcepto_Opinion int, @Msj varchar(500),
+	 @DescripcionTipoContrato varchar(50), @IdContratoArrto int, 
+	 @DescripcionTipoArrendamiento varchar(50), @Fk_IdContratoArrtoPadre int,
+	 --RCA 08/06/2018
+	 @EsRUSP bit
+
+	--Obtener el Folio de contrato de cat_parametros
+	--leer de catParamentros el ultimo Id, del tipo de cpto y sumar 1
+	SELECT @FolioContratoArrto = convert(int, ValorParametro)+1
+	FROM [
+////////////////////////////==================================
+NAME >> spuInsertRespuestasAplicacionEmisionOpinion <<
+/* =============================================
+-- Author:		desa25
+-- Create date: 22/07/2016
+-- Description:	Insert una Emision de Opinion:
+
+Este sp afecta a los siguientes objetos:
+* Insert: InmuebleArrendamiento
+* Insert: AplicacionConcepto --Master
+* Insert: RespuestaConcepto --Detail
+* Update: Cat_parametro
+* Insert: SelloDigital
+* Insert: EmisionOpinonContrato (referncia de contrato Arrto padre para cuando se trata de un Continuacion o Sustitucion)
+
+
+--estructura tipo para pasar una arreglo de valores
+CREATE TYPE [dbo].[RespuestaCptoList] AS TABLE(
+	IdConceptoRespValor [int] NOT NULL,
+	ValorResp int NOT NULL
+	
+)
+GO
+
+--**** *Prueba de SP:  *****************************
+
+--llenar la lista-type como arreglo de valores
+declare @p1 dbo.RespuestaCptoList
+insert into @p1 values(5,10) --un si
+insert into @p1 values(6,0)
+
+exec dbo.[spuInsertRespuestasAplicacionEmisionOpinion]
+@DescTipoArrendamiento='Nuevo'
+,@IdInstitucion = 
+,@IdUsuarioRegistro = 0
+,@IdCargo = 1
+,@ListRespCpto=@p1,
+,@CadenaOriginal = '2222'
+,@SelloDigital  = 'cxxxx'
+,@Tema= 'Opinión Nuevo Arrendamiento'
+,@IdInmuebleArrendamiento = 1
+
+-- =============================================*/
+CREATE PROCEDURE [dbo].[spuInsertRespuestasAplicacionEmisionOpinion]
+@DescTipoArrendamiento varchar(50), --Nuevo, Continuación, Sustitución
+@IdInstitucion int,
+@IdUsuarioRegistro int,
+@CargoUsuarioRegistro varchar(170),
+@ListRespCpto AS dbo.RespuestaConceptoList READONLY, --arreglo de Respuestas por Cpto
+@Tema varchar(100),  --Opinión Nuevo Arrendamiento, Opinión Continuación Arrendamiento, Opinión Sustitución Arrendamiento
+--
+@CadenaOriginal varchar(MAX),
+@SelloDigital  varchar(MAX),
+@QR varchar(max),
+@IdInmuebleArrendamiento int, --para el inmueble al que se aplica la emision de opinion
+--caso para cuando se trate de emision de opinion basada en un Contrato: Continuacion y Sustitucion
+@EsContratoHistorico bit = null, --opcionales para cuado se trate de Nueva Emision de Opinion
+@FolioContrato int = null,  --opcionales para cuando se trate de Nueva Emision de Opinion
+@FolioSMOI int = null, --el la FK correspondiente a un Folio SMOI, para cuando se trata de una opinion: Nueva o sustitucion, pero puede ser opcional
+@Justificacion varchar(MAX), -- RCA 18/01/2018 la cadena que tendra el valor de la justificacion
+@FolioDictamen varchar(MAX),
+@FechaDictamen varchar(20)
+
+AS
+BEGIN
+
+
+--lectura sucia no bloqueo
+--SET NOCOUNT ON;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+
+declare @IdTipoArrendamiento tinyint,  @Msj varchar(500), @IdTema tinyint, @Fk_IdAplicacionConceptoSMOI int, @count tinyint
+declare @Observaciones varchar(300)
+
+--nulificar
+if (@FolioSMOI = 0)
+	set @FolioSMOI = null;
+ 
+ --comentado porque si es posible asociar un folio smoi, mas de 1 vez a mas de una solicitud de emsion de opinion,
+ --porque puede ser que un promovente este buscando obtener una opinion favorable
+ /*
+ if @FolioSMOI is not null --si hay SMOI validarlo si esta desocuapado
+ begin
+	--validar folio SMOI sin relacionar con  solicitud de Emision Opinion
+	SELECT    @count=   COUNT(1) 
+	FROM            
+	AplicacionConcepto AS AplicacionConceptoSMOI RIGHT OUTER JOIN
+	Cat_Tema ON AplicacionConceptoSMOI.Fk_IdTema = Cat_Tema.IdTema RIGHT OUTER JOIN
+	AplicacionConcepto ON AplicacionConceptoSMOI.IdAplicacionConcepto = AplicacionConcepto.Fk_IdAplicacionConceptoSMOI
+	Where  AplicacionConceptoSMOI.FolioAplicacionConcepto = @FolioSMOI--FolioSMOI
+	and [Cat_Tema].DescripcionTema = 'SMOI'
+	and AplicacionConceptoSMOI.EstatusRegistro = 1 --Activo el SMOI
+	and AplicacionConcepto.EstatusRegistro = 1 --Activo la Emision Opinion
+	and AplicacionConceptoSMOI.Fk_IdInstitucion = @IdInstitucion
+
+	if @count > 0
+	begin
+		set @Msj  = 'El Folio SMOI proporcionado ya fue asignado en una solicitud de emisión de opinión y no puede reutilizarse, verifica no es posible ejecutar el registro de la información'
+		--lanzar expcecion
+		Raiserror (@Msj, 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+/* =============================================
+-- Author:		desa25
+-- Create date: 22/07/2016
+-- Description:	Insert una Emision de Opinion:
+
+Este sp afecta a los siguientes objetos:
+* Insert: InmuebleArrendamiento
+* Insert: AplicacionConcepto --Master
+* Insert: RespuestaConcepto --Detail
+* Update: Cat_parametro
+* Insert: SelloDigital
+* Insert: EmisionOpinonContrato (referncia de contrato Arrto padre para cuando se trata de un Continuacion o Sustitucion)
+
+
+--estructura tipo para pasar una arreglo de valores
+CREATE TYPE [dbo].[RespuestaCptoList] AS TABLE(
+	IdConceptoRespValor [int] NOT NULL,
+	ValorResp int NOT NULL
+	
+)
+GO
+
+--**** *Prueba de SP:  *****************************
+
+--llenar la lista-type como arreglo de valores
+declare @p1 dbo.RespuestaCptoList
+insert into @p1 values(5,10) --un si
+insert into @p1 values(6,0)
+
+exec dbo.[spuInsertRespuestasAplicacionEmisionOpinion]
+@DescTipoArrendamiento='Nuevo'
+,@IdInstitucion = 
+,@IdUsuarioRegistro = 0
+,@IdCargo = 1
+,@ListRespCpto=@p1,
+,@CadenaOriginal = '2222'
+,@SelloDigital  = 'cxxxx'
+,@Tema= 'Opinión Nuevo Arrendamiento'
+,@IdInmuebleArrendamiento = 1
+
+-- =============================================*/
+CREATE PROCEDURE [dbo].[spuInsertRespuestasAplicacionEmisionOpinion]
+@DescTipoArrendamiento varchar(50), --Nuevo, Continuación, Sustitución
+@IdInstitucion int,
+@IdUsuarioRegistro int,
+@CargoUsuarioRegistro varchar(170),
+@ListRespCpto AS dbo.RespuestaConceptoList READONLY, --arreglo de Respuestas por Cpto
+@Tema varchar(100),  --Opinión Nuevo Arrendamiento, Opinión Continuación Arrendamiento, Opinión Sustitución Arrendamiento
+--
+@CadenaOriginal varchar(MAX),
+@SelloDigital  varchar(MAX),
+@QR varchar(max),
+@IdInmuebleArrendamiento int, --para el inmueble al que se aplica la emision de opinion
+--caso para cuando se trate de emision de opinion basada en un Contrato: Continuacion y Sustitucion
+@EsContratoHistorico bit = null, --opcionales para cuado se trate de Nueva Emision de Opinion
+@FolioContrato int = null,  --opcionales para cuando se trate de Nueva Emision de Opinion
+@FolioSMOI int = null, --el la FK correspondiente a un Folio SMOI, para cuando se trata de una opinion: Nueva o sustitucion, pero puede ser opcional
+@Justificacion varchar(MAX), -- RCA 18/01/2018 la cadena que tendra el valor de la justificacion
+@FolioDictamen varchar(MAX),
+@FechaDictamen varchar(20)
+
+AS
+BEGIN
+
+
+--lectura sucia no bloqueo
+--SET NOCOUNT ON;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+
+declare @IdTipoArrendamiento tinyint,  @Msj varchar(500), @IdTema tinyint, @Fk_IdAplicacionConceptoSMOI int, @count tinyint
+declare @Observaciones varchar(300)
+
+--nulificar
+if (@FolioSMOI = 0)
+	set @FolioSMOI = null;
+ 
+ --comentado porque si es posible asociar un folio smoi, mas de 1 vez a mas de una solicitud de emsion de opinion,
+ --porque puede ser que un promovente este buscando obtener una opinion favorable
+ /*
+ if @FolioSMOI is not null --si hay SMOI validarlo si esta desocuapado
+ begin
+	--validar folio SMOI sin relacionar con  solicitud de Emision Opinion
+	SELECT    @count=   COUNT(1) 
+	FROM            
+	AplicacionConcepto AS AplicacionConceptoSMOI RIGHT OUTER JOIN
+	Cat_Tema ON AplicacionConceptoSMOI.Fk_IdTema = Cat_Tema.IdTema RIGHT OUTER JOIN
+	AplicacionConcepto ON AplicacionConceptoSMOI.IdAplicacionConcepto = AplicacionConcepto.Fk_IdAplicacionConceptoSMOI
+	Where  AplicacionConceptoSMOI.FolioAplicacionConcepto = @FolioSMOI--FolioSMOI
+	and [Cat_Tema].DescripcionTema = 'SMOI'
+	and AplicacionConceptoSMOI.EstatusRegistro = 1 --Activo el SMOI
+	and AplicacionConcepto.EstatusRegistro = 1 --Activo la Emision Opinion
+	and AplicacionConceptoSMOI.Fk_IdInstitucion = @IdInstitucion
+
+	if @count > 0
+	begin
+		set @Msj  = 'El Folio SMOI proporcionado ya fue asignado en una solicitud de emisión de opinión y no puede reutilizarse, verifica no es posible ejecutar el registro de la información'
+		--lanzar expcecion
+		Raiserror (@Msj, 
+////////////////////////////==================================
+NAME >> spuInsertRespuestasTablaSMOI <<
+
+/* =============================================
+-- Author:		desa25
+-- Create date: 06/09/2016
+-- Description:	Insert respuestas de TablaSMOI
+
+Este sp afecta a los siguientes objetos:
+* Insert: AplicacionConcepto --Master
+* Insert: RespuestaConcepto --Detail
+* Update: Cat_parametro
+* Insert: SelloDigital
+
+--**** *Prueba de SP:  *****************************
+
+--llenar la lista-type como arreglo de valores
+declare @p1 dbo.RespuestaCptoList
+insert into @p1 values(5,10) --un si
+insert into @p1 values(6,0)
+
+exec dbo.[spuInsertRespuestasTablaSMOI] 
+,@IdInstitucion = 1
+,@IdUsuarioRegistro = 0
+,@IdCargo = 1
+,@ListRespCpto=@p1,
+,@CadenaOriginal = '2222'
+,@SelloDigital  = 'cxxxx'
+
+
+-- =============================================*/
+
+CREATE PROCEDURE [dbo].[spuInsertRespuestasTablaSMOI]
+@IdInstitucion int,
+@IdUsuarioRegistro int,
+@CargoUsuarioRegistro varchar(170),
+@ListRespCpto AS dbo.RespuestaConceptoList READONLY, --arreglo de Respuestas por Cpto
+--
+@CadenaOriginal varchar(MAX),
+@SelloDigital  varchar(MAX),
+@QR varchar(max)
+AS
+
+BEGIN
+	
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	declare   @Msj varchar(500), @IdTema tinyint, @Tema varchar(100) = 'SMOI'
+
+	select @IdTema = IdTema 
+	from Cat_Tema
+	where DescripcionTema = @Tema
+	and EstatusRegistro = 1
+
+	--Validar la seleccion
+	if (@IdTema is null)
+	begin
+		set @Msj = 'No es posible registrar la información, porque no se encontró un tema con la descripción: [ ' + @Tema + ' ], ¡Verificar exista este concepto en: Cat_Tema'
+		Raiserror (@Msj, 15, 217 )
+		return 0
+	end
+
+
+Declare @IdAplicacionCptoContrato int, @contador smallint, @IdTipoArrendamiento tinyint
+--Declaracion de la tabla 
+declare @TablaVarRespuestaCpto
+	table (
+		id_Table smallint identity(1,1) not null,--El valor semilla es el que nos permite obtener el valor consecutivo de 1 en 1 para poder iterar
+		IdConceptoRespValor int, 
+		ValorResp decimal (10,2)
+		)
+
+--variables de uso de paso en el procesamiento de la tabla vs arreglo de parametros
+declare 
+@contadorValorResp tinyint, --Contendrá el número de registros de la variable tabla
+@IdConceptoRespValor int, 
+@ValorResp decimal (10,2)
+
+set @contador = 0
+declare @FolioAplicacionConcepto int
+		
+--leer de catParametros el ultimo Id, del tipo de cpto y sumar 1
+SELECT @FolioAplicacionConcepto = convert(int, ValorParametro)+1
+FROM [Cat_Parametro]
+WHERE 
+ParametroNombre = @Tema --Opinión Nuevo Arrendamiento, Opinión Continuación Arrendamiento, Opinión Sustitución Arrendamiento
+and estatusRegistro =1--registro activo
+
+--@Tema= 'Opinión Nuevo Arrendamiento'
+
+
+if @FolioAplicacionConcepto is null
+begin
+	set @Msj = 'No es posible registrar la información, porque no se encontró un parámetro para: Folio SMOI, éste es necesario para registrar las respuestas a los conceptos, verifica que exista el registro en Cat_Parametro'
+	Raiserror (@Msj, 15, 217 )
+	return 0
+end
+
+select @IdTipoArrendamiento = IdTipoArrendamiento
+from Cat_TipoArrendamiento
+where  estatusRegistro =1--registro activo
+and DescripcionTipoArrendamiento = 'Ninguno'
+
+if @IdTipoArrendamiento is null
+begin
+	set @Msj = 'No es posible registrar la información, porque no se encontró un parámetro para tipo de Arrendamiento: Ninguno, éste valor es necesario para registrar las respuestas a los conceptos, verifica que exista el registro en Cat_TipoArrendamiento'
+	Raiserror (@Msj, 15, 217 )
+	return 0
+end
+
+--seleccionar el valor de calculo para el FactorY (0.44)
+DECLARE @ValorCatParametro_FactorY varchar(10) --para uso exclusivo del Factor-Y
+
+Select @ValorCatParametro_FactorY = ValorParametro
+		from Cat_Parametro
+		--comparar cadenas sin espacios, para asegurar
+		where   ParametroNombre like '%Factor-Y%'
+
+if @ValorCatParametro_FactorY is null
+begin
+	set @Msj = 'No es posible registrar la información, porque no se encontró el valor del parámetro para calcular el factor-Y de SMOI , verifica que exista el registro en Cat_TipoA
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+/* =============================================
+-- Author:		desa25
+-- Create date: 06/09/2016
+-- Description:	Insert respuestas de TablaSMOI
+
+Este sp afecta a los siguientes objetos:
+* Insert: AplicacionConcepto --Master
+* Insert: RespuestaConcepto --Detail
+* Update: Cat_parametro
+* Insert: SelloDigital
+
+--**** *Prueba de SP:  *****************************
+
+--llenar la lista-type como arreglo de valores
+declare @p1 dbo.RespuestaCptoList
+insert into @p1 values(5,10) --un si
+insert into @p1 values(6,0)
+
+exec dbo.[spuInsertRespuestasTablaSMOI] 
+,@IdInstitucion = 1
+,@IdUsuarioRegistro = 0
+,@IdCargo = 1
+,@ListRespCpto=@p1,
+,@CadenaOriginal = '2222'
+,@SelloDigital  = 'cxxxx'
+
+
+-- =============================================*/
+
+CREATE PROCEDURE [dbo].[spuInsertRespuestasTablaSMOI]
+@IdInstitucion int,
+@IdUsuarioRegistro int,
+@CargoUsuarioRegistro varchar(170),
+@ListRespCpto AS dbo.RespuestaConceptoList READONLY, --arreglo de Respuestas por Cpto
+--
+@CadenaOriginal varchar(MAX),
+@SelloDigital  varchar(MAX),
+@QR varchar(max)
+AS
+
+BEGIN
+	
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	declare   @Msj varchar(500), @IdTema tinyint, @Tema varchar(100) = 'SMOI'
+
+	select @IdTema = IdTema 
+	from Cat_Tema
+	where DescripcionTema = @Tema
+	and EstatusRegistro = 1
+
+	--Validar la seleccion
+	if (@IdTema is null)
+	begin
+		set @Msj = 'No es posible registrar la información, porque no se encontró un tema con la descripción: [ ' + @Tema + ' ], ¡Verificar exista este concepto en: Cat_Tema'
+		Raiserror (@Msj, 15, 217 )
+		return 0
+	end
+
+
+Declare @IdAplicacionCptoContrato int, @contador smallint, @IdTipoArrendamiento tinyint
+--Declaracion de la tabla 
+declare @TablaVarRespuestaCpto
+	table (
+		id_Table smallint identity(1,1) not null,--El valor semilla es el que nos permite obtener el valor consecutivo de 1 en 1 para poder iterar
+		IdConceptoRespValor int, 
+		ValorResp decimal (10,2)
+		)
+
+--variables de uso de paso en el procesamiento de la tabla vs arreglo de parametros
+declare 
+@contadorValorResp tinyint, --Contendrá el número de registros de la variable tabla
+@IdConceptoRespValor int, 
+@ValorResp decimal (10,2)
+
+set @contador = 0
+declare @FolioAplicacionConcepto int
+		
+--leer de catParametros el ultimo Id, del tipo de cpto y sumar 1
+SELECT @FolioAplicacionConcepto = convert(int, ValorParametro)+1
+FROM [Cat_Parametro]
+WHERE 
+ParametroNombre = @Tema --Opinión Nuevo Arrendamiento, Opinión Continuación Arrendamiento, Opinión Sustitución Arrendamiento
+and estatusRegistro =1--registro activo
+
+--@Tema= 'Opinión Nuevo Arrendamiento'
+
+
+if @FolioAplicacionConcepto is null
+begin
+	set @Msj = 'No es posible registrar la información, porque no se encontró un parámetro para: Folio SMOI, éste es necesario para registrar las respuestas a los conceptos, verifica que exista el registro en Cat_Parametro'
+	Raiserror (@Msj, 15, 217 )
+	return 0
+end
+
+select @IdTipoArrendamiento = IdTipoArrendamiento
+from Cat_TipoArrendamiento
+where  estatusRegistro =1--registro activo
+and DescripcionTipoArrendamiento = 'Ninguno'
+
+if @IdTipoArrendamiento is null
+begin
+	set @Msj = 'No es posible registrar la información, porque no se encontró un parámetro para tipo de Arrendamiento: Ninguno, éste valor es necesario para registrar las respuestas a los conceptos, verifica que exista el registro en Cat_TipoArrendamiento'
+	Raiserror (@Msj, 15, 217 )
+	return 0
+end
+
+--seleccionar el valor de calculo para el FactorY (0.44)
+DECLARE @ValorCatParametro_FactorY varchar(10) --para uso exclusivo del Factor-Y
+
+Select @ValorCatParametro_FactorY = ValorParametro
+		from Cat_Parametro
+		--comparar cadenas sin espacios, para asegurar
+		where   ParametroNombre like '%Factor-Y%'
+
+if @ValorCatParametro_FactorY is null
+begin
+	set @Msj = 'No es posible registrar la información, porque no se encontró el valor del parámetro para calcular el factor-Y de SMOI , verifica que exista el registro en Cat_TipoA
+////////////////////////////==================================
+NAME >> spuObtenerValorParametro <<
+/*-- =============================================
+-- Author:		desa25
+-- Create date: 21/09/2016
+-- Description:	Obtener el valor de un parametro en activo por nombre
+	
+	exec dbo.spuObtenerValorParametro @ParametroNombre = 'Factor-Y'
+
+-- =============================================*/
+CREATE PROCEDURE [dbo].[spuObtenerValorParametro]
+	@ParametroNombre varchar(70)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT [ValorParametro]
+	FROM [dbo].[Cat_Parametro]
+	where [ParametroNombre] = @ParametroNombre
+	and EstatusRegistro = 1
+
+
+END
+
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+/*-- =============================================
+-- Author:		desa25
+-- Create date: 21/09/2016
+-- Description:	Obtener el valor de un parametro en activo por nombre
+	
+	exec dbo.spuObtenerValorParametro @ParametroNombre = 'Factor-Y'
+
+-- =============================================*/
+CREATE PROCEDURE [dbo].[spuObtenerValorParametro]
+	@ParametroNombre varchar(70)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT [ValorParametro]
+	FROM [dbo].[Cat_Parametro]
+	where [ParametroNombre] = @ParametroNombre
+	and EstatusRegistro = 1
+
+
+END
+
+
+
+////////////////////////////==================================
+NAME >> spuSelectAcuseContrato <<
+/* =============================================
+-- Author:		desa25
+-- Create date: 19/10/2016
+-- Description:	Obtener la informacion de un Folio de Acuse de Contrato
+	
+	exec dbo.[spuSelectAcuseContrato] @FolioContrato=15
+	exec dbo.[spuSelectAcuseContrato] @FolioContrato=36988
+	
+
+-- =============================================*/
+CREATE PROCEDURE [dbo].[spuSelectAcuseContrato] 
+@FolioContrato int
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	set language 'spanish'
+
+	declare 
+	@IdContratoArrto int,
+	@FechaRegistro datetime,
+	@Fk_IdUsuarioRegistro int,--usr que registro
+	@Fk_IdInstitucion int, --institucion del usr que registro
+	@IdCargo int, --cargo del usr que registro
+	@CadenaOriginal varchar(max),
+	@SelloDigital varchar(max),	
+	@QR varchar(max),
+	@Leyendaqr varchar(max),
+	@Msj varchar(400)
+
+
+	select @IdContratoArrto = IdContratoArrto
+	from ContratoArrto
+	where FolioContratoArrto = @FolioContrato
+
+	if @IdContratoArrto is not null
+	begin
+		
+		--obtener informacion del sello digital, para la Emision de Opinion
+		SELECT  
+		@CadenaOriginal = SelloDigital.CadenaOriginal, 
+		@SelloDigital = SelloDigital.SelloDigital,
+		@QR = SelloDigital.QR
+		FROM   
+		SelloDigital INNER JOIN
+		Cat_Tabla ON SelloDigital.Fk_IdCatTabla = Cat_Tabla.IdCatTabla			
+		where 
+		Cat_Tabla.DescripcionTabla ='ContratoArrto'
+		and SelloDigital.[Fk_IdRegistroTablaOrigen] = @IdContratoArrto
+		and SelloDigital.[EstatusRegistro] = 1
+
+
+		--RCA 13/08/2018
+		SELECT @Leyendaqr = Cat_Parametro.ValorParametro
+		FROM Cat_Parametro
+		WHERE IdParametro = 14
+
+		--datos del contrato
+			SELECT        
+				ContratoArrto.FolioContratoArrto, 				 
+				'Ciudad de México, a '+ convert(varchar(10),day(ContratoArrto.FechaRegistro)) + ' de ' +  DateName(month,ContratoArrto.FechaRegistro) + ' de ' +  convert(varchar(10), year(ContratoArrto.FechaRegistro)) + '' as FechaRegistro,
+				RIGHT( CONVERT(DATETIME, ContratoArrto.FechaRegistro, 108),8) as HoraRegistro,
+				ContratoArrto.Fk_IdUsuarioRegistro, 
+				ContratoArrto.NombreInstitucion, 
+				--ContratoArrto.Fk_IdInmuebleArrendamiento, 
+                ContratoArrto.Fk_NumContratoHistorico, --para cuando es un contrato arrto de Continuacion o Sustitucion
+				ContratoArrto.Fk_IdContratoArrtoPadre, --para cuando es un contrato arrto de Continuacion o Sustitucion
+				--ContratoArrto.Fk_IdTipoUsoInm, 
+				--ContratoArrto.OtroUsoInmueble, 
+				--ContratoArrto.Fk_IdTipoOcupacion, 
+				Cat_TipoOcupacion.[DescripcionTipoOcupacion], --aplica al tipo de Contratacion de: OtrasFigOcupacion	
+                ContratoArrto.OtroTipoOcupacion, 
+				ContratoArrto.Fk_IdTipoMoneda, 
+				ContratoArrto.FechaInicioOcupacion, 
+				ContratoArrto.FechaFinOcupacion, 
+				ContratoArrto.AreaOcupadaM2, 
+				ContratoArrto.MontoPagoMensual, 
+                ContratoArrto.MontoPagoPorCajonesEstacionamiento, 
+				ContratoArrto.CuotaMantenimiento, 
+				ContratoArrto.PtjeImpuesto, 
+				
+				
+				ContratoArrto.NumeroDictamenExcepcionFolioSMOI, 
+                ContratoArrto.RIUF, 
+				ContratoArrto.PropietarioInmueble, 
+				ContratoArrto.FuncionarioResponsable, 
+				--info de catalogos
+				Cat_TipoContrato.DescripcionTipoContrato, --Nacional. Extr o OtrasFigOcupacion 
+				Cat_TipoArrendamiento.DescripcionTipoArrendamiento, --Nuevo, Continuacion y Sust.
+              		
+                Cat_TipoContratacion.DescripcionTipoContratacion, 
+				AplicacionConcepto.FolioAplicacionConcepto as FolioOpinion, 
+				AplicacionConcepto.FolioSAEF as FolioSAEF,
+
+				
+				--Inmueble al que aplica
+				InmuebleArrendamiento.NombreInmueble, 
+				InmuebleArrendamiento.Fk_IdPais, 
+                InmuebleArrendamiento.Fk_IdTipoInmueble, 
+				InmuebleArrendamiento.Fk_IdEstado, 
+				InmuebleArrendamiento.Fk_IdMunicipio, 
+				InmuebleArrendamiento.Fk_IdLocalidad, 
+		
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+/* =============================================
+-- Author:		desa25
+-- Create date: 19/10/2016
+-- Description:	Obtener la informacion de un Folio de Acuse de Contrato
+	
+	exec dbo.[spuSelectAcuseContrato] @FolioContrato=15
+	exec dbo.[spuSelectAcuseContrato] @FolioContrato=36988
+	
+
+-- =============================================*/
+CREATE PROCEDURE [dbo].[spuSelectAcuseContrato] 
+@FolioContrato int
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	set language 'spanish'
+
+	declare 
+	@IdContratoArrto int,
+	@FechaRegistro datetime,
+	@Fk_IdUsuarioRegistro int,--usr que registro
+	@Fk_IdInstitucion int, --institucion del usr que registro
+	@IdCargo int, --cargo del usr que registro
+	@CadenaOriginal varchar(max),
+	@SelloDigital varchar(max),	
+	@QR varchar(max),
+	@Leyendaqr varchar(max),
+	@Msj varchar(400)
+
+
+	select @IdContratoArrto = IdContratoArrto
+	from ContratoArrto
+	where FolioContratoArrto = @FolioContrato
+
+	if @IdContratoArrto is not null
+	begin
+		
+		--obtener informacion del sello digital, para la Emision de Opinion
+		SELECT  
+		@CadenaOriginal = SelloDigital.CadenaOriginal, 
+		@SelloDigital = SelloDigital.SelloDigital,
+		@QR = SelloDigital.QR
+		FROM   
+		SelloDigital INNER JOIN
+		Cat_Tabla ON SelloDigital.Fk_IdCatTabla = Cat_Tabla.IdCatTabla			
+		where 
+		Cat_Tabla.DescripcionTabla ='ContratoArrto'
+		and SelloDigital.[Fk_IdRegistroTablaOrigen] = @IdContratoArrto
+		and SelloDigital.[EstatusRegistro] = 1
+
+
+		--RCA 13/08/2018
+		SELECT @Leyendaqr = Cat_Parametro.ValorParametro
+		FROM Cat_Parametro
+		WHERE IdParametro = 14
+
+		--datos del contrato
+			SELECT        
+				ContratoArrto.FolioContratoArrto, 				 
+				'Ciudad de México, a '+ convert(varchar(10),day(ContratoArrto.FechaRegistro)) + ' de ' +  DateName(month,ContratoArrto.FechaRegistro) + ' de ' +  convert(varchar(10), year(ContratoArrto.FechaRegistro)) + '' as FechaRegistro,
+				RIGHT( CONVERT(DATETIME, ContratoArrto.FechaRegistro, 108),8) as HoraRegistro,
+				ContratoArrto.Fk_IdUsuarioRegistro, 
+				ContratoArrto.NombreInstitucion, 
+				--ContratoArrto.Fk_IdInmuebleArrendamiento, 
+                ContratoArrto.Fk_NumContratoHistorico, --para cuando es un contrato arrto de Continuacion o Sustitucion
+				ContratoArrto.Fk_IdContratoArrtoPadre, --para cuando es un contrato arrto de Continuacion o Sustitucion
+				--ContratoArrto.Fk_IdTipoUsoInm, 
+				--ContratoArrto.OtroUsoInmueble, 
+				--ContratoArrto.Fk_IdTipoOcupacion, 
+				Cat_TipoOcupacion.[DescripcionTipoOcupacion], --aplica al tipo de Contratacion de: OtrasFigOcupacion	
+                ContratoArrto.OtroTipoOcupacion, 
+				ContratoArrto.Fk_IdTipoMoneda, 
+				ContratoArrto.FechaInicioOcupacion, 
+				ContratoArrto.FechaFinOcupacion, 
+				ContratoArrto.AreaOcupadaM2, 
+				ContratoArrto.MontoPagoMensual, 
+                ContratoArrto.MontoPagoPorCajonesEstacionamiento, 
+				ContratoArrto.CuotaMantenimiento, 
+				ContratoArrto.PtjeImpuesto, 
+				
+				
+				ContratoArrto.NumeroDictamenExcepcionFolioSMOI, 
+                ContratoArrto.RIUF, 
+				ContratoArrto.PropietarioInmueble, 
+				ContratoArrto.FuncionarioResponsable, 
+				--info de catalogos
+				Cat_TipoContrato.DescripcionTipoContrato, --Nacional. Extr o OtrasFigOcupacion 
+				Cat_TipoArrendamiento.DescripcionTipoArrendamiento, --Nuevo, Continuacion y Sust.
+              		
+                Cat_TipoContratacion.DescripcionTipoContratacion, 
+				AplicacionConcepto.FolioAplicacionConcepto as FolioOpinion, 
+				AplicacionConcepto.FolioSAEF as FolioSAEF,
+
+				
+				--Inmueble al que aplica
+				InmuebleArrendamiento.NombreInmueble, 
+				InmuebleArrendamiento.Fk_IdPais, 
+                InmuebleArrendamiento.Fk_IdTipoInmueble, 
+				InmuebleArrendamiento.Fk_IdEstado, 
+				InmuebleArrendamiento.Fk_IdMunicipio, 
+				InmuebleArrendamiento.Fk_IdLocalidad, 
+		
+////////////////////////////==================================
+NAME >> spuSelectAcuseEmisionOpinionXIdFolio <<
+/* =============================================
+-- Author:		desa25
+-- Create date: 29/07/2016
+-- Description:	Obtener informacion para acuse de Emision de Opinion, los folios de acuse se expiden para cada tipo de cpto;
+es decir un tiraje de folios para: Nuevo, Continuación, Sustitución
+
+exec dbo.spuSelectAcuseEmisionOpinionXIdFolio @IdFolioAplicacionCpto = 42, 
+@DescripcionTipoArrendamiento = 'Nuevo'
+
+exec dbo.spuSelectAcuseEmisionOpinionXIdFolio @IdFolioAplicacionCpto = 46, 
+@DescripcionTipoArrendamiento = 'Continuación'
+
+exec dbo.spuSelectAcuseEmisionOpinionXIdFolio @IdFolioAplicacionCpto = 2, 
+@DescripcionTipoArrendamiento = 'Sustitución'
+-- =============================================*/
+CREATE PROCEDURE [dbo].[spuSelectAcuseEmisionOpinionXIdFolio] 
+	@IdFolioAplicacionCpto int,
+	@DescripcionTipoArrendamiento varchar(50)--Nuevo, Continuación, Sustitución
+AS
+BEGIN
+    SET NOCOUNT ON;
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	set language 'spanish'
+
+	--variables de uso
+	declare @PK_IdAplicacionConcepto int, --PK
+			@FolioAplicacionConcepto int,
+			@FechaRegistro datetime,
+			--@DescripcionTipoArrendamiento varchar(50),
+			@DescripcionTipoArrendamiento2 varchar(50),
+			@Resultado varchar(30), 
+			@Fk_IdUsuarioRegistro int,--usr que registro
+			@Fk_IdInstitucion int, --institucion del usr que registro
+			@TextoRespuesta varchar(8000),
+			@CargoUsuarioRegistro varchar(170), --cargo del usr que registro
+			@Fk_IdInmuebleArrendamiento int,
+			@CadenaOriginal varchar(max),
+			@SelloDigital varchar(max),
+			@QR varchar(max),
+			@LeyendaQR varchar(max),
+			@DeclaracionAnio varchar(max)
+
+		
+
+	--Seleccion de datos del encabezado de la solicitud de Emision de Opinion de Arrto.
+	SELECT  
+	@PK_IdAplicacionConcepto = AplicacionConcepto.IdAplicacionConcepto,
+	@FolioAplicacionConcepto = AplicacionConcepto.FolioAplicacionConcepto, 
+	@FechaRegistro = convert(varchar(20),AplicacionConcepto.FechaRegistro,113), 
+	@DescripcionTipoArrendamiento = Cat_TipoArrendamiento.DescripcionTipoArrendamiento,
+	@Fk_IdUsuarioRegistro = AplicacionConcepto.Fk_IdUsuarioRegistro, 
+	@Fk_IdInstitucion = AplicacionConcepto.Fk_IdInstitucion,
+	@CargoUsuarioRegistro = AplicacionConcepto.CargoUsuarioRegistro,
+	@Fk_IdInmuebleArrendamiento = AplicacionConcepto.Fk_IdInmuebleArrendamiento,
+	@DeclaracionAnio = ISNULL(Cat_Parametro.ValorParametro,'')
+	FROM     AplicacionConcepto INNER JOIN
+             Cat_TipoArrendamiento ON AplicacionConcepto.Fk_IdTipoArrendamiento = Cat_TipoArrendamiento.IdTipoArrendamiento LEFT OUTER JOIN
+			 Cat_Parametro ON Cat_Parametro.ParametroNombre = 'Diario Oficial ' + CONVERT(VARCHAR(4),DATEPART(yyyy,AplicacionConcepto.FechaRegistro))
+	WHERE    (AplicacionConcepto.EstatusRegistro = 1)
+	and		AplicacionConcepto.FolioAplicacionConcepto = @IdFolioAplicacionCpto
+	and Cat_TipoArrendamiento.DescripcionTipoArrendamiento = @DescripcionTipoArrendamiento
+
+	--determinar el resultado de Emision de Opinion, si exisen cptos determinanates con respuestas negativas = No-Favorable
+	IF EXISTS (
+	
+		SELECT  1-- Rel_ConceptoRespValor.EsDeterminante, ValorResp, NumOrden
+		FROM    RespuestaConcepto INNER JOIN
+				Rel_ConceptoRespValor ON RespuestaConcepto.Fk_IdConceptoRespValor = Rel_ConceptoRespValor.IdConceptoRespValor
+		WHERE       
+		RespuestaConcepto.Fk_IdAplicacionConcepto = @PK_IdAplicacionConcepto
+		--si el concepto es determinnate y se respondio negativo, entonces el resultado de la opinion es: No Favorable
+		and EsDeterminante = 1 and valorResp =0
+		--ORDER BY NumOrden
+	) 
+	BEGIN
+		IF @DescripcionTipoArrendamiento = 'Seguridad'
+		BEGIN
+			SET @Resultado = 'OPINION FAVORABLE'
+		END
+		ELSE
+		BEGIN
+			SET @Resultado = 'OPINION NO FAVORABLE'
+		END
+	END
+-------------------------------------------------------------	
+	--IF @DescripcionTipoArrendamiento = 'Seguridad'
+	--	BEGIN
+	--	set @Resultado = 'OPINION FAVORABLE'
+	--	END
+------------------------------------------------
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+/* =============================================
+-- Author:		desa25
+-- Create date: 29/07/2016
+-- Description:	Obtener informacion para acuse de Emision de Opinion, los folios de acuse se expiden para cada tipo de cpto;
+es decir un tiraje de folios para: Nuevo, Continuación, Sustitución
+
+exec dbo.spuSelectAcuseEmisionOpinionXIdFolio @IdFolioAplicacionCpto = 42, 
+@DescripcionTipoArrendamiento = 'Nuevo'
+
+exec dbo.spuSelectAcuseEmisionOpinionXIdFolio @IdFolioAplicacionCpto = 46, 
+@DescripcionTipoArrendamiento = 'Continuación'
+
+exec dbo.spuSelectAcuseEmisionOpinionXIdFolio @IdFolioAplicacionCpto = 2, 
+@DescripcionTipoArrendamiento = 'Sustitución'
+-- =============================================*/
+CREATE PROCEDURE [dbo].[spuSelectAcuseEmisionOpinionXIdFolio] 
+	@IdFolioAplicacionCpto int,
+	@DescripcionTipoArrendamiento varchar(50)--Nuevo, Continuación, Sustitución
+AS
+BEGIN
+    SET NOCOUNT ON;
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	set language 'spanish'
+
+	--variables de uso
+	declare @PK_IdAplicacionConcepto int, --PK
+			@FolioAplicacionConcepto int,
+			@FechaRegistro datetime,
+			--@DescripcionTipoArrendamiento varchar(50),
+			@DescripcionTipoArrendamiento2 varchar(50),
+			@Resultado varchar(30), 
+			@Fk_IdUsuarioRegistro int,--usr que registro
+			@Fk_IdInstitucion int, --institucion del usr que registro
+			@TextoRespuesta varchar(8000),
+			@CargoUsuarioRegistro varchar(170), --cargo del usr que registro
+			@Fk_IdInmuebleArrendamiento int,
+			@CadenaOriginal varchar(max),
+			@SelloDigital varchar(max),
+			@QR varchar(max),
+			@LeyendaQR varchar(max),
+			@DeclaracionAnio varchar(max)
+
+		
+
+	--Seleccion de datos del encabezado de la solicitud de Emision de Opinion de Arrto.
+	SELECT  
+	@PK_IdAplicacionConcepto = AplicacionConcepto.IdAplicacionConcepto,
+	@FolioAplicacionConcepto = AplicacionConcepto.FolioAplicacionConcepto, 
+	@FechaRegistro = convert(varchar(20),AplicacionConcepto.FechaRegistro,113), 
+	@DescripcionTipoArrendamiento = Cat_TipoArrendamiento.DescripcionTipoArrendamiento,
+	@Fk_IdUsuarioRegistro = AplicacionConcepto.Fk_IdUsuarioRegistro, 
+	@Fk_IdInstitucion = AplicacionConcepto.Fk_IdInstitucion,
+	@CargoUsuarioRegistro = AplicacionConcepto.CargoUsuarioRegistro,
+	@Fk_IdInmuebleArrendamiento = AplicacionConcepto.Fk_IdInmuebleArrendamiento,
+	@DeclaracionAnio = ISNULL(Cat_Parametro.ValorParametro,'')
+	FROM     AplicacionConcepto INNER JOIN
+             Cat_TipoArrendamiento ON AplicacionConcepto.Fk_IdTipoArrendamiento = Cat_TipoArrendamiento.IdTipoArrendamiento LEFT OUTER JOIN
+			 Cat_Parametro ON Cat_Parametro.ParametroNombre = 'Diario Oficial ' + CONVERT(VARCHAR(4),DATEPART(yyyy,AplicacionConcepto.FechaRegistro))
+	WHERE    (AplicacionConcepto.EstatusRegistro = 1)
+	and		AplicacionConcepto.FolioAplicacionConcepto = @IdFolioAplicacionCpto
+	and Cat_TipoArrendamiento.DescripcionTipoArrendamiento = @DescripcionTipoArrendamiento
+
+	--determinar el resultado de Emision de Opinion, si exisen cptos determinanates con respuestas negativas = No-Favorable
+	IF EXISTS (
+	
+		SELECT  1-- Rel_ConceptoRespValor.EsDeterminante, ValorResp, NumOrden
+		FROM    RespuestaConcepto INNER JOIN
+				Rel_ConceptoRespValor ON RespuestaConcepto.Fk_IdConceptoRespValor = Rel_ConceptoRespValor.IdConceptoRespValor
+		WHERE       
+		RespuestaConcepto.Fk_IdAplicacionConcepto = @PK_IdAplicacionConcepto
+		--si el concepto es determinnate y se respondio negativo, entonces el resultado de la opinion es: No Favorable
+		and EsDeterminante = 1 and valorResp =0
+		--ORDER BY NumOrden
+	) 
+	BEGIN
+		IF @DescripcionTipoArrendamiento = 'Seguridad'
+		BEGIN
+			SET @Resultado = 'OPINION FAVORABLE'
+		END
+		ELSE
+		BEGIN
+			SET @Resultado = 'OPINION NO FAVORABLE'
+		END
+	END
+-------------------------------------------------------------	
+	--IF @DescripcionTipoArrendamiento = 'Seguridad'
+	--	BEGIN
+	--	set @Resultado = 'OPINION FAVORABLE'
+	--	END
+------------------------------------------------
+////////////////////////////==================================
+NAME >> spuSelectAcuseSMOI <<
+/* =============================================
+-- Author:		desa25
+-- Create date: 06/09/2016
+-- Description:	Obtener la informacion de un Folio de Acuse de SMOI
+	
+	exec dbo.spuSelectAcuseSMOI @IdFolioAplicacionCpto=69
+	select * from aplicacionconcepto
+-- =============================================*/
+CREATE PROCEDURE [dbo].[spuSelectAcuseSMOI] 
+@IdFolioAplicacionCpto int
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	set language 'spanish'
+
+	declare 
+	@PK_IdAplicacionConcepto int, --PK
+	@FolioAplicacionConcepto int,
+	@FechaRegistroApliacionCpto_SMOI datetime,
+	@Fk_IdUsuarioRegistro int,--usr que registro
+	@Fk_IdInstitucion int, --institucion del usr que registro
+	@CargoUsuarioRegistro varchar(170), --cargo del usr que registro
+	@CadenaOriginal varchar(max),
+	@SelloDigital varchar(max),
+	@TotalSMOIm2FactorX decimal(20,2),
+	@TotalSMOIm2FactorY decimal(20,2),
+	@TotalSMOIm2FactorZ decimal(20,2),
+	--@TotalSMOIm2 decimal(20,2),
+	@ValorCatParametro_FactorY varchar(10),
+	@DeclaracionAnio varchar(max),
+	@QR varchar(max),
+	@LeyendaQR varchar(max),
+	@Msj varchar(400)
+
+	--Seleccion de datos del encabezado de la solicitud de SMOI.
+	SELECT  
+	@PK_IdAplicacionConcepto = AplicacionConcepto.IdAplicacionConcepto,
+	@FolioAplicacionConcepto = AplicacionConcepto.FolioAplicacionConcepto,  
+	@FechaRegistroApliacionCpto_SMOI = AplicacionConcepto.FechaRegistro,
+	@Fk_IdUsuarioRegistro = AplicacionConcepto.Fk_IdUsuarioRegistro, 
+	@Fk_IdInstitucion = AplicacionConcepto.Fk_IdInstitucion,
+	@CargoUsuarioRegistro = AplicacionConcepto.CargoUsuarioRegistro,
+	@TotalSMOIm2FactorX = dbo.fncObtenerTotalM2xFactorSMOI (AplicacionConcepto.FolioAplicacionConcepto,AplicacionConcepto.Fk_IdInstitucion, 'SMOI FactorX') 	,
+	@TotalSMOIm2FactorZ = dbo.fncObtenerTotalM2xFactorSMOI (AplicacionConcepto.FolioAplicacionConcepto,AplicacionConcepto.Fk_IdInstitucion, 'SMOI FactorZ') 	,
+	@ValorCatParametro_FactorY = SMOIm2FactorY,
+	@DeclaracionAnio = ISNULL(Cat_Parametro.ValorParametro,'')
+	FROM     
+		AplicacionConcepto INNER JOIN
+        Cat_TipoArrendamiento ON AplicacionConcepto.Fk_IdTipoArrendamiento = Cat_TipoArrendamiento.IdTipoArrendamiento LEFT OUTER JOIN
+		Cat_Parametro ON Cat_Parametro.ParametroNombre = 'Diario Oficial ' + CONVERT(VARCHAR(4),DATEPART(yyyy,AplicacionConcepto.FechaRegistro))
+	WHERE    
+	(AplicacionConcepto.EstatusRegistro = 1)
+	and		AplicacionConcepto.FolioAplicacionConcepto = @IdFolioAplicacionCpto
+	and Cat_TipoArrendamiento.DescripcionTipoArrendamiento = 'Ninguno' --es el que se pone por default a SMOI
+
+	if @PK_IdAplicacionConcepto is not null
+	begin
+		--obtener informacion del sello digital, para la Emision de Opinion
+		SELECT  
+		@CadenaOriginal = SelloDigital.CadenaOriginal, 
+		@SelloDigital = SelloDigital.SelloDigital,
+	    @QR = SelloDigital.QR
+		FROM   
+		SelloDigital INNER JOIN
+		Cat_Tabla ON SelloDigital.Fk_IdCatTabla = Cat_Tabla.IdCatTabla			
+		where 
+		Cat_Tabla.DescripcionTabla ='AplicacionConcepto'
+		and SelloDigital.[Fk_IdRegistroTablaOrigen] = @PK_IdAplicacionConcepto
+		and SelloDigital.[EstatusRegistro] = 1
+
+		--RCA 10/08/2018
+		SELECT 
+		@LeyendaQR = Cat_Parametro.ValorParametro
+		FROM
+		Cat_Parametro
+		WHERE
+		IdParametro = 14
+		
+				
+		if (ISNumeric(@ValorCatParametro_FactorY)= 1)
+		begin
+			--factorY es calculado en funcion del FactorX y el factor-Z definido en CatParametros
+			set @TotalSMOIm2FactorY = (@TotalSMOIm2FactorX * convert(numeric(7,2), @ValorCatParametro_FactorY))
+
+	
+			--Salida al usuario
+			SELECT  
+			@FolioAplicacionConcepto as FolioAplicacionConcepto, 
+			'Ciudad de México, a '+ convert(varchar(10),day(@FechaRegistroApliacionCpto_SMOI)) + ' de ' +  DateName(month,@FechaRegistroApliacionCpto_SMOI) + ' de ' +  convert(varchar(10), year(@FechaRegistroApliacionCpto_SMOI)) + '' as FechaRegistro,
+			RIGHT(
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+/* =============================================
+-- Author:		desa25
+-- Create date: 06/09/2016
+-- Description:	Obtener la informacion de un Folio de Acuse de SMOI
+	
+	exec dbo.spuSelectAcuseSMOI @IdFolioAplicacionCpto=69
+	select * from aplicacionconcepto
+-- =============================================*/
+CREATE PROCEDURE [dbo].[spuSelectAcuseSMOI] 
+@IdFolioAplicacionCpto int
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	set language 'spanish'
+
+	declare 
+	@PK_IdAplicacionConcepto int, --PK
+	@FolioAplicacionConcepto int,
+	@FechaRegistroApliacionCpto_SMOI datetime,
+	@Fk_IdUsuarioRegistro int,--usr que registro
+	@Fk_IdInstitucion int, --institucion del usr que registro
+	@CargoUsuarioRegistro varchar(170), --cargo del usr que registro
+	@CadenaOriginal varchar(max),
+	@SelloDigital varchar(max),
+	@TotalSMOIm2FactorX decimal(20,2),
+	@TotalSMOIm2FactorY decimal(20,2),
+	@TotalSMOIm2FactorZ decimal(20,2),
+	--@TotalSMOIm2 decimal(20,2),
+	@ValorCatParametro_FactorY varchar(10),
+	@DeclaracionAnio varchar(max),
+	@QR varchar(max),
+	@LeyendaQR varchar(max),
+	@Msj varchar(400)
+
+	--Seleccion de datos del encabezado de la solicitud de SMOI.
+	SELECT  
+	@PK_IdAplicacionConcepto = AplicacionConcepto.IdAplicacionConcepto,
+	@FolioAplicacionConcepto = AplicacionConcepto.FolioAplicacionConcepto,  
+	@FechaRegistroApliacionCpto_SMOI = AplicacionConcepto.FechaRegistro,
+	@Fk_IdUsuarioRegistro = AplicacionConcepto.Fk_IdUsuarioRegistro, 
+	@Fk_IdInstitucion = AplicacionConcepto.Fk_IdInstitucion,
+	@CargoUsuarioRegistro = AplicacionConcepto.CargoUsuarioRegistro,
+	@TotalSMOIm2FactorX = dbo.fncObtenerTotalM2xFactorSMOI (AplicacionConcepto.FolioAplicacionConcepto,AplicacionConcepto.Fk_IdInstitucion, 'SMOI FactorX') 	,
+	@TotalSMOIm2FactorZ = dbo.fncObtenerTotalM2xFactorSMOI (AplicacionConcepto.FolioAplicacionConcepto,AplicacionConcepto.Fk_IdInstitucion, 'SMOI FactorZ') 	,
+	@ValorCatParametro_FactorY = SMOIm2FactorY,
+	@DeclaracionAnio = ISNULL(Cat_Parametro.ValorParametro,'')
+	FROM     
+		AplicacionConcepto INNER JOIN
+        Cat_TipoArrendamiento ON AplicacionConcepto.Fk_IdTipoArrendamiento = Cat_TipoArrendamiento.IdTipoArrendamiento LEFT OUTER JOIN
+		Cat_Parametro ON Cat_Parametro.ParametroNombre = 'Diario Oficial ' + CONVERT(VARCHAR(4),DATEPART(yyyy,AplicacionConcepto.FechaRegistro))
+	WHERE    
+	(AplicacionConcepto.EstatusRegistro = 1)
+	and		AplicacionConcepto.FolioAplicacionConcepto = @IdFolioAplicacionCpto
+	and Cat_TipoArrendamiento.DescripcionTipoArrendamiento = 'Ninguno' --es el que se pone por default a SMOI
+
+	if @PK_IdAplicacionConcepto is not null
+	begin
+		--obtener informacion del sello digital, para la Emision de Opinion
+		SELECT  
+		@CadenaOriginal = SelloDigital.CadenaOriginal, 
+		@SelloDigital = SelloDigital.SelloDigital,
+	    @QR = SelloDigital.QR
+		FROM   
+		SelloDigital INNER JOIN
+		Cat_Tabla ON SelloDigital.Fk_IdCatTabla = Cat_Tabla.IdCatTabla			
+		where 
+		Cat_Tabla.DescripcionTabla ='AplicacionConcepto'
+		and SelloDigital.[Fk_IdRegistroTablaOrigen] = @PK_IdAplicacionConcepto
+		and SelloDigital.[EstatusRegistro] = 1
+
+		--RCA 10/08/2018
+		SELECT 
+		@LeyendaQR = Cat_Parametro.ValorParametro
+		FROM
+		Cat_Parametro
+		WHERE
+		IdParametro = 14
+		
+				
+		if (ISNumeric(@ValorCatParametro_FactorY)= 1)
+		begin
+			--factorY es calculado en funcion del FactorX y el factor-Z definido en CatParametros
+			set @TotalSMOIm2FactorY = (@TotalSMOIm2FactorX * convert(numeric(7,2), @ValorCatParametro_FactorY))
+
+	
+			--Salida al usuario
+			SELECT  
+			@FolioAplicacionConcepto as FolioAplicacionConcepto, 
+			'Ciudad de México, a '+ convert(varchar(10),day(@FechaRegistroApliacionCpto_SMOI)) + ' de ' +  DateName(month,@FechaRegistroApliacionCpto_SMOI) + ' de ' +  convert(varchar(10), year(@FechaRegistroApliacionCpto_SMOI)) + '' as FechaRegistro,
+			RIGHT(
+////////////////////////////==================================
+NAME >> spuSelectExcepcionNormatividadPreviaContrato <<
+/*-- =============================================
+-- Author:		desa25
+-- Create date: 26/10/2016
+-- Description:	obtener descripcion de previa de excepcion de normatividad de un contrato a registrar
+--  Obtienes de 1 hasta 7 excepciones a la normatividad, cada expceion se expone como una linea HTML pues se usa </br> como salto de linea
+
+exec dbo.spuSelectExcepcionNormatividadPreviaContrato 
+@TipoContrato = 1 --1=Nacional
+,@AreaOcupadaM2 = 122.25
+,@RentaMensualUnitaria = 5500
+,@FolioEmisionOpinion = 55
+,@SuperficieDictaminada_Justipreciacion = null
+,@MontoDictaminado_Justipreciacion = null
+,@NumeroDictamenExcepcionFolioSMOI = null
+
+
+-- =============================================*/
+
+
+CREATE PROCEDURE [dbo].[spuSelectExcepcionNormatividadPreviaContrato]
+	@TipoContrato tinyint, --1= Nacional, 2=Extranjero u 3= Otras Fig. Ocupacion
+	@AreaOcupadaM2 numeric(30, 4),
+    @RentaMensualUnitaria money, --Es la suma de MontoPagoMensual + MontoPagoPorCajonesEstacionamiento + CuotaMantenimiento
+	--opcionales
+	@FolioEmisionOpinion int= NULL, --Emision de Opinion
+	@SuperficieDictaminada_Justipreciacion varchar(300)= null,
+	@MontoDictaminado_Justipreciacion decimal(15, 2) = null,
+	@NumeroDictamenExcepcionFolioSMOI varchar(30) = NULL --atributo dependiente, si la emision de Opinion, no inlcuye SMOI, entonces "quizas" (se deja registrar aun no lo tenga) hay DictamenExcepcion
+	
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	if ( @TipoContrato = 1) --las excepciones de normatividad sólo aplican a contratos nacionales
+	begin
+		--7 validaciones de Normatividad, si alguna excepcion se cumple, entonces realizar el insert
+
+		Declare @strMontoMinimoParaJustipreciacion varchar(15),
+		@Msj varchar(400)
+		set @Msj = ''
+		
+		SELECT @strMontoMinimoParaJustipreciacion = [ValorParametro]
+		FROM [dbo].[Cat_Parametro]
+		where [ParametroNombre] like '%Justipreciacion%'
+		and EstatusRegistro = 1
+
+		--  1. Se rebaso el monto mínimo (Monto Total Renta Unitaria) para tener justipreciación
+		--  y no se proporcionó un Secuencial de Justipreciación 
+	
+
+		if isnumeric(@strMontoMinimoParaJustipreciacion) = 1
+		begin
+			if (@RentaMensualUnitaria > convert(smallmoney,@strMontoMinimoParaJustipreciacion))
+			begin
+			
+				--no se ha proporcionado justipreciciacion
+				if (@MontoDictaminado_Justipreciacion is null)
+			
+					set @Msj = '</br>No se proporcionó un secuencial de justipreciación y el total de renta mensual sin impuesto es <strong>mayor</strong> que el monto mínimo para justipreciación (' +  CONVERT(varchar(50), CONVERT(money, @RentaMensualUnitaria), 1)  + '>' +  CONVERT(varchar(50), CONVERT(money, convert(smallmoney,@strMontoMinimoParaJustipreciacion)), 1)  + '). <br/>' 
+				
+			
+			end			
+		end
+		else--no hay parametro en la BD, lanzar excepcion
+		begin 
+			set @Msj = '</br>No es posible registrar el contrato porque no existe definido una valor númerico para el parametro de: monto mínimo para justipreciación, verifica.'
+			Raiserror (@Msj, 15, 217 )
+			return 0
+
+		end
+	
+
+		--2. Existe Secuencial de Justipreciación, pero el pago de Monto Total Renta Unitaria, rebasa el Monto Dictaminado  de la Justipreciación 
+		if (@MontoDictaminado_Justipreciacion is not null)
+		begin
+			if (@RentaMensualUnitaria > @MontoDictaminado_Justipreciacion)
+				set @Msj = @Msj + '</br>El total de la renta unitaria sin impuestos es <strong>mayor</strong> al monto dictaminado en la justipreciación (' + CONVERT(varchar(50), CONVERT(money, @RentaMensualUnitaria), 1)  + '>' +  CONVERT(varchar(50), CONVERT(money, @MontoDictaminado_Justipreciacion), 1)  + '). <br/>' 
+				
+		
+			--3. Existe Secuencial de Justipreciación, pero el AreaOcupadaM2 proporcionado es mayor que la Superficie de m2 Dictaminada de la Justipreciación 
+			if (@AreaOcupadaM2 > convert(decimal(30,2), @SuperficieDictaminada_Justipreciacion) )
+				set @Msj =  @Msj + 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+/*-- =============================================
+-- Author:		desa25
+-- Create date: 26/10/2016
+-- Description:	obtener descripcion de previa de excepcion de normatividad de un contrato a registrar
+--  Obtienes de 1 hasta 7 excepciones a la normatividad, cada expceion se expone como una linea HTML pues se usa </br> como salto de linea
+
+exec dbo.spuSelectExcepcionNormatividadPreviaContrato 
+@TipoContrato = 1 --1=Nacional
+,@AreaOcupadaM2 = 122.25
+,@RentaMensualUnitaria = 5500
+,@FolioEmisionOpinion = 55
+,@SuperficieDictaminada_Justipreciacion = null
+,@MontoDictaminado_Justipreciacion = null
+,@NumeroDictamenExcepcionFolioSMOI = null
+
+
+-- =============================================*/
+
+
+CREATE PROCEDURE [dbo].[spuSelectExcepcionNormatividadPreviaContrato]
+	@TipoContrato tinyint, --1= Nacional, 2=Extranjero u 3= Otras Fig. Ocupacion
+	@AreaOcupadaM2 numeric(30, 4),
+    @RentaMensualUnitaria money, --Es la suma de MontoPagoMensual + MontoPagoPorCajonesEstacionamiento + CuotaMantenimiento
+	--opcionales
+	@FolioEmisionOpinion int= NULL, --Emision de Opinion
+	@SuperficieDictaminada_Justipreciacion varchar(300)= null,
+	@MontoDictaminado_Justipreciacion decimal(15, 2) = null,
+	@NumeroDictamenExcepcionFolioSMOI varchar(30) = NULL --atributo dependiente, si la emision de Opinion, no inlcuye SMOI, entonces "quizas" (se deja registrar aun no lo tenga) hay DictamenExcepcion
+	
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	if ( @TipoContrato = 1) --las excepciones de normatividad sólo aplican a contratos nacionales
+	begin
+		--7 validaciones de Normatividad, si alguna excepcion se cumple, entonces realizar el insert
+
+		Declare @strMontoMinimoParaJustipreciacion varchar(15),
+		@Msj varchar(400)
+		set @Msj = ''
+		
+		SELECT @strMontoMinimoParaJustipreciacion = [ValorParametro]
+		FROM [dbo].[Cat_Parametro]
+		where [ParametroNombre] like '%Justipreciacion%'
+		and EstatusRegistro = 1
+
+		--  1. Se rebaso el monto mínimo (Monto Total Renta Unitaria) para tener justipreciación
+		--  y no se proporcionó un Secuencial de Justipreciación 
+	
+
+		if isnumeric(@strMontoMinimoParaJustipreciacion) = 1
+		begin
+			if (@RentaMensualUnitaria > convert(smallmoney,@strMontoMinimoParaJustipreciacion))
+			begin
+			
+				--no se ha proporcionado justipreciciacion
+				if (@MontoDictaminado_Justipreciacion is null)
+			
+					set @Msj = '</br>No se proporcionó un secuencial de justipreciación y el total de renta mensual sin impuesto es <strong>mayor</strong> que el monto mínimo para justipreciación (' +  CONVERT(varchar(50), CONVERT(money, @RentaMensualUnitaria), 1)  + '>' +  CONVERT(varchar(50), CONVERT(money, convert(smallmoney,@strMontoMinimoParaJustipreciacion)), 1)  + '). <br/>' 
+				
+			
+			end			
+		end
+		else--no hay parametro en la BD, lanzar excepcion
+		begin 
+			set @Msj = '</br>No es posible registrar el contrato porque no existe definido una valor númerico para el parametro de: monto mínimo para justipreciación, verifica.'
+			Raiserror (@Msj, 15, 217 )
+			return 0
+
+		end
+	
+
+		--2. Existe Secuencial de Justipreciación, pero el pago de Monto Total Renta Unitaria, rebasa el Monto Dictaminado  de la Justipreciación 
+		if (@MontoDictaminado_Justipreciacion is not null)
+		begin
+			if (@RentaMensualUnitaria > @MontoDictaminado_Justipreciacion)
+				set @Msj = @Msj + '</br>El total de la renta unitaria sin impuestos es <strong>mayor</strong> al monto dictaminado en la justipreciación (' + CONVERT(varchar(50), CONVERT(money, @RentaMensualUnitaria), 1)  + '>' +  CONVERT(varchar(50), CONVERT(money, @MontoDictaminado_Justipreciacion), 1)  + '). <br/>' 
+				
+		
+			--3. Existe Secuencial de Justipreciación, pero el AreaOcupadaM2 proporcionado es mayor que la Superficie de m2 Dictaminada de la Justipreciación 
+			if (@AreaOcupadaM2 > convert(decimal(30,2), @SuperficieDictaminada_Justipreciacion) )
+				set @Msj =  @Msj + 
+////////////////////////////==================================
